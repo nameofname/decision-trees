@@ -1,0 +1,110 @@
+"use strict";
+
+
+module.exports = [
+    {
+        Field: 'dibs_V_aadla_logo',
+        Type: 'varchar(255)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '',
+        Extra: '' },
+    {
+        Field: 'dibs_V_aadla_logo_active',
+        Type: 'enum(\'Y\',\'N\')',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: 'N',
+        Extra: '' },
+    {
+        Field: 'dibs_V_maillogo',
+        Type: 'varchar(255)',
+        Null: 'YES',
+        Key: '',
+        Default: null,
+        Extra: '' },
+    {
+        Field: 'dibs_V_maillogoactive',
+        Type: 'enum(\'Y\',\'N\')',
+        Null: 'NO',
+        Key: '',
+        Default: 'N',
+        Extra: '' },
+    {
+        Field: 'dibs_V_scrolllogo',
+        Type: 'varchar(256)',
+        Null: 'YES',
+        Key: 'MUL',
+        Default: null,
+        Extra: '' },
+    {
+        Field: 'dibs_V_scrolllogoactive',
+        Type: 'enum(\'Y\',\'N\')',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: 'N',
+        Extra: '' },
+    {
+        Field: 'dibs_V_addresslogo',
+        Type: 'enum(\'Y\',\'N\')',
+        Null: 'NO',
+        Key: '',
+        Default: 'N',
+        Extra: '' },
+    {
+        Field: 'dibs_V_addressmaillogo',
+        Type: 'enum(\'Y\',\'N\')',
+        Null: 'NO',
+        Key: '',
+        Default: 'N',
+        Extra: '' },
+    {
+        Field: 'dibs_V_authorization',
+        Type: 'tinytext',
+        Null: 'YES',
+        Key: '',
+        Default: null,
+        Extra: '' },
+    {
+        Field: 'dibs_V_agreementstart',
+        Type: 'int(11)',
+        Null: 'YES',
+        Key: 'MUL',
+        Default: null,
+        Extra: '' },
+    {
+        Field: 'dibs_V_agreementcycle',
+        Type: 'int(11)',
+        Null: 'NO',
+        Key: '',
+        Default: '12',
+        Extra: '' },
+    {
+        Field: 'dibs_V_lastbillingdate',
+        Type: 'int(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' },
+    {
+        Field: 'dibs_V_lastfreeitemsdate',
+        Type: 'int(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' },
+    {
+        Field: 'dibs_V_lastfreeSSitemsdate',
+        Type: 'int(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' },
+    {
+        Field: 'dibs_V_discount',
+        Type: 'int(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' }
+];

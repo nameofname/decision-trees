@@ -1,0 +1,4 @@
+{
+  "bail": true,
+  "testRegex": "_spec\\.(es\\.)?jsx?$"
+}
