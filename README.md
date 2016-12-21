@@ -16,6 +16,7 @@ This is a great video which covers most of the concepts I use in this repository
 
 
 ## TODO :
-- [ ] jest testing
+- [x] add jest unit tests
+- [ ] re factor sorted inputs away from inforomationGain.js and assign to a class
 - [ ] create classes to store attribute map and sorted inputs
 - [ ] complete recursion
