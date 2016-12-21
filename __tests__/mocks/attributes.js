@@ -87,6 +87,20 @@ module.exports = [
         Default: null,
         Extra: '' },
     {
+        Field: 'bombastic',
+        Type: 'text',
+        Null: 'YES',
+        Key: '',
+        Default: null,
+        Extra: '' },
+    {
+        Field: 'fantastic',
+        Type: 'mediumtext',
+        Null: 'YES',
+        Key: '',
+        Default: null,
+        Extra: '' },
+    {
         Field: 'tantric',
         Type: 'int(11)',
         Null: 'YES',
@@ -120,5 +134,40 @@ module.exports = [
         Null: 'NO',
         Key: 'MUL',
         Default: '0',
-        Extra: '' }
+        Extra: '' },
+    {
+        Field: 'short',
+        Type: 'decimal(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' },
+    {
+        Field: 'tall',
+        Type: 'bigint(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' },
+    {
+        Field: 'medium',
+        Type: 'float(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' },
+    {
+        Field: 'wide',
+        Type: 'float unsigned(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' },
+    {
+        Field: 'fattt',
+        Type: 'tinyint(11)',
+        Null: 'NO',
+        Key: 'MUL',
+        Default: '0',
+        Extra: '' },
 ];
