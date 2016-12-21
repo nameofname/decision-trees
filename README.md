@@ -13,3 +13,9 @@ Decision Trees are used in data mining, machine learning and artificial intellig
 This is a great video which covers most of the concepts I use in this repository :
 
 ["Machine learning - Decision trees" from UBC](https://www.youtube.com/watch?v=-dCtJjlEEgM)
+
+
+## TODO :
+- [ ] jest testing
+- [ ] create classes to store attribute map and sorted inputs
+- [ ] complete recursion
