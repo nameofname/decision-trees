@@ -25,12 +25,12 @@ module.exports = [
         name : 'four',
         intAttr : 2,
         enumAttr : 'N',
-        wordAttr : 'manface'
+        wordAttr : 'shirt'
     }, {
         id : 5,
         name : 'five',
         intAttr : 3,
         enumAttr : 'N',
-        wordAttr : 'manface'
+        wordAttr : 'shirt'
     }
 ];

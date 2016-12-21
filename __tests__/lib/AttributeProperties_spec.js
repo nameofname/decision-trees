@@ -27,15 +27,28 @@ describe('buildAttributesMap', ()=> {
     });
 
     it('should calculate all of the possible values of each attribute column from the training data', () => {
-        console.log('wat will we find.', atp.get('enumAttr').values)
         expect(atp.get('enumAttr').values).toEqual(['Y', 'N']);
+        expect(atp.get('wordAttr').values).toEqual(['ronald', 'manface', 'shirt']);
     });
 
-    // it('should correctly parse the attributes', () => {
-    //     attributeColumns.forEach(obj => {
-    //         expect(atp.get(obj.Field) instanceof Object).toEqual(true)
-    //         expect(atp.get(obj.Field).value instanceof Array).toEqual(true)
-    //         expect(atp.get(obj.Field).test instanceof Function).toEqual(true)
-    //     });
-    // });
+    it('should generate range values for numeric input with more than N possible values', () => {
+        const training = trainingData.slice();
+        while (training.length < 200) {
+            training.push({
+                id : training.length,
+                name : `mock ${training.length}`,
+                intAttr : training.length,
+                enumAttr : 'Y',
+                wordAttr : 'manface'
+            });
+        }
+        const atp1 = new AttributeProperties({trainingData: training, attributeColumns});
+        expect(atp1.get('intAttr').range).toEqual(true);
+        expect(atp1.get('intAttr').values.length).toEqual(atp1.numericRangeCutoff);
+        atp1.get('intAttr').values.forEach(arr => {
+            expect(arr instanceof Array).toEqual(true);
+            expect(arr.length).toEqual(2);
+        })
+    });
+
 });
