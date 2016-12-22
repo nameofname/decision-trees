@@ -44,7 +44,8 @@ describe("SortedInputMap", () => {
 
         it('should return all of the training data passed in', () => {
             expect(si.getMergedTrainingData().length).toEqual(trainingData.length);
-            console.log(si.getMergedTrainingData())
+            const allIds = si.getMergedTrainingData().map(o => o.id).sort();
+            expect(trainingData.map(o => o.id).sort()).toEqual(allIds);
         });
     });
 
