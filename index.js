@@ -8,4 +8,11 @@ const mockData = require('./config/mockData');
 const decisionTree = require('./lib/decisionTreeBuilder');
 
 
-decisionTree(mockData);
+decisionTree(mockData)
+    .then(tree => {
+        console.log('Received this decision tree : ');
+        console.log(tree);
+    })
+    .catch(err => {
+        console.log('Error caught : ', err);
+    });
