@@ -1,6 +1,7 @@
 "use strict";
 
-require('./babelHook');
+// TODO ! I don't need any of the babel deps any more. ... unless I want to start using import.
+// require('./babelHook');
 // const AttributesMap = require('./lib/AttributesMap');
 const SortedInputMap = require('./lib/SortedInputMap');
 const mock = require('./config/mockData');
