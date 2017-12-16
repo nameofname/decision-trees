@@ -1,7 +1,7 @@
 "use strict";
 
 // const SortedInputMap = require('./SortedInputMap');
-
+const COUNT = '__________________COUNT__';
 
 // probability (used in entropy)
 const _probability = (val, total) => (val / total);
@@ -21,8 +21,31 @@ const entropyForSeries = (catMap, total) => {
 /**
  * Calculate the information gain for a given field to another field
  */
-module.exports = (trainingData, allTehTings) => {
-    //
+module.exports = (trainingData, categoryField, igField) => {
+    // TODO ! we are going to ignore the testFunctions for now and assume we can do this just by detecting probability of value X for igField
+    let ig = 1;
+    const dataMap = trainingData.reduce((map, obj) => {
+        // for each piece of training data, we want to calculate the probability that the igField will be a certain value
+        // and connect that to our category field to find the relationship between the two.
+        const { [categoryField]: catValue, [igField]: igValue } = obj;
+        if (!map.get(igValue)) {
+            map.set(igValue, new Map());
+            map.get(igValue).set(COUNT, 0);
+        }
+
+        const igMap = map.get(igValue);
+        igMap.set(COUNT, igMap.get(COUNT) + 1);
+
+        if (!igMap.get(catValue)) {
+            igMap.set(catValue, 1);
+        } else {
+            igMap.set(catValue, (igMap.get(catValue) + 1));
+        }
+
+        return map;
+    }, new Map());
+
+    return dataMap;
 };
 
 
