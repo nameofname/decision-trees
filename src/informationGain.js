@@ -110,9 +110,10 @@ const informationGain = (trainingData, parentNodeCount, classificationField, igF
  * Given the training data and segmented on Y, what is the specific conditional entropy of
  * I don't know how to write this, so I'm going to start as if I had my data segmented ...
  */
-const conditionalEntropy = (data, segmentedOn, classificationField) => {
+const informationGain = (data, segmentedOn, classificationField) => {
 
     const { segments, totalCount } = data;
+    data.entropy = 0;
 
     for (let segment of segments) {
         const { trainingData } = segment;
@@ -122,12 +123,15 @@ const conditionalEntropy = (data, segmentedOn, classificationField) => {
         segment.valuesOfX = trainingData
             .reduce((map, curr) => {
                 const value = curr[classificationField];
-                if (Number(map.get(valu3)) !== map.get(valu3)) {
+                if (Number(map.get(value)) !== map.get(value)) {
                     map.set(value, 0);
                 }
                 map.set(value, map.get(value) + 1);
                 return map;
             }, new Map());
+
+        const probability = segment.trainingData.length / totalCount;
+        data.entropy -= probability * Math.log2(probability);
     }
 
     // now we find the specific conditional entropy for each value of X within segments of Y :
@@ -145,7 +149,7 @@ const conditionalEntropy = (data, segmentedOn, classificationField) => {
         segment.specificConditionalEntropy = specificConditionalEntropy;
     }
 
-    const conditionalEntropy = segments => {
+    data.conditionalEntropy = segments => {
         let conditionalEntropy = 0;
         for (let segment of segments) {
             const { probability, specificConditionalEntropy } = segment;
@@ -154,5 +158,7 @@ const conditionalEntropy = (data, segmentedOn, classificationField) => {
         return conditionalEntropy;
     };
 
-    return conditionalEntropy;
+    return data.entropy - data.conditionalEntropy;
 };
+
+module.exports = informationGain;
