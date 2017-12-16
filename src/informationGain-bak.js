@@ -90,7 +90,7 @@ const entropyForSeries = (catMap, total) => {
  *      of the attribute value.
  */
 const ig = (trainingData, attributeMapObject, classificationMapObject) => {
-    // here we want to sort each training input into a 2 teir list which is keyed on the attribute value and the
+    // here we want to sort each training input into a 2 tier list which is keyed on the attribute value and the
     // input classification. First build the data structure your inputs will fall into :
     const totalLength = trainingData.length;
     // here we want to sort each training input into a 2 teir list which is keyed on the attribute value and the

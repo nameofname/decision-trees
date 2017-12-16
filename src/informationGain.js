@@ -18,15 +18,7 @@ const entropyForSeries = (catMap, total) => {
 };
 
 
-// TODO ! we are going to ignore the testFunctions for now and assume we can do this just by detecting probability of value X for igField
-
-/**
- * Calculate the information gain for a given field to another field
- */
-module.exports = (trainingData, categoryField, igField) => {
-
-    let ig = 1;
-
+const createDataMap = (trainingData, categoryField, igField) => {
     // for each piece of training data, we want to calculate the probability that the igField will be a certain value
     // and connect that to our category field to find the relationship between the two.
     // to that end we start by building out a map of IG values to category values.
@@ -46,9 +38,6 @@ module.exports = (trainingData, categoryField, igField) => {
     // testing for
     // in this scenario, each igValue in the map represents a potential child node - and if we decide to branch
     // on that child node, the counts of each will become the node in question.
-    // TODO ! abstract away this data map into a class that does this action for each node
-    // TODO ! abstract away this data map into a class that does this action for each node
-    // TODO ! abstract away this data map into a class that does this action for each node
     // basically each node should be a data map with a set of training data within itself !!!! and it should have a method
     // to sub-divide based on a given ig field and category field.
     // the IG function should be purely mathematical, this should be a part of the node.
@@ -78,39 +67,73 @@ module.exports = (trainingData, categoryField, igField) => {
     return { dataMap };
 };
 
+/**
+ * Calculate the information gain for a given field to another field
+ *
+ * NOTES : Here I have already sub-divided my data at a given node
+ * Therefore, I know the total count, and the training data at the proposed child
+ * The IG will be a measure of the relationship between values of classification data point and data point X - where
+ * we want to know how much data point X correlates with the classification data.
+ *
+ * SO - what data will we need ?
+ *  - Training data
+ *  - total count (at current node)
+ *  - classification field
+ *  - IG field
+ */
+const informationGain = (trainingData, parentNodeCount, classificationField, igField) => {
 
-const ig_bak = (trainingData, attributeMapObject, classificationMapObject) => {
-    // here we want to sort each training input into a 2 teir list which is keyed on the attribute value and the
-    // input classification. First build the data structure your inputs will fall into :
-    const totalLength = trainingData.length;
-    // here we want to sort each training input into a 2 teir list which is keyed on the attribute value and the
-    // input classification. The first level of this structure is a map, the lower level an array.
-    const sortedInputs = new SortedInputMap({trainingData, attributeMapObject, classificationMapObject});
+    const proposedChildCount = trainingData.length;
+    const probability = proposedChildCount / parentNodeCount;
+    let ig = 1;
 
-    // now get the entropy for each of the buckets discovered - each L1 bucket is a possible branch, each L2 bucket
-    // expresses the uncertainty within it (it's divided amongst the different classes).
-    // _calculateEntropies(sortedInputs, totalLength);
-    // const entropies = [];
-    // here attrMap is a map with 2 props : total and values. values is another map of cat val to array
-    for (let attrMap of sortedInputs.values()) {
-        const entropy = entropyForSeries(attrMap.get('values'), totalLength);
-        attrMap.set('entropy', entropy);
+};
+
+/**
+ * To get the information gain, you first get the entropy for each proposed child node.
+ * To get the entropy for a given child node, the formula is :
+ *      ∑
+ * @param trainingData
+ * @param parentNodeCount
+ * @param classificationField
+ * @param igField
+ */
+
+/**
+ * For various values of X, what is the entropy of Y
+ *      ∑ P(X=v) * H(Y|X=v)
+ *      - P(X=v) is the probability X = v
+ *      - H(Y|X=v) is the entropy of Y given that X = v
+ * @param summaryArray
+ */
+const conditionalEntropy = summaryArray => {
+    let conditionalEntropy = 0;
+    for (let obj of summaryArray) {
+        const { probability, specificConditionalEntropy } = obj;
+        conditionalEntropy += probability * specificConditionalEntropy;
+    }
+    return conditionalEntropy;
+};
+
+/**
+ * Given the training data and segmented on Y, what is the specific conditional entropy of
+ * I don't know how to write this, so I'm going to start as if I had my data segmented ...
+ */
+const specificConditionalEntropies = (data, segmentedOn, classificationField) => {
+    for (let segment of data) {
+        const { trainingData } = segment;
+        // here we must find counts for the different values of X :
+        // TODO ! perhaps we can do this while segmenting the data - simply increment each value of X within the counter map!
+        // TODO ! that would save time.
+        segment.valuesOfXPerSegment = trainingData
+            .reduce((map, curr) => {
+                const value = curr[classificationField];
+                map[value] = map[value] || 0;
+                ++map[value];
+                return map;
+            }, {});
     }
 
-    let infoGain = 1;
-    // to calculate info gain, in series we subtract probability * etnropy
-    // note here we are talking about the probability of the L1 bucket, of the given attribute value, not related to
-    // the L2 buckets of classes.
-    for (let attrMap of sortedInputs.values()) {
-        const probability = attrMap.get('total') / totalLength;
-        const entropy = attrMap.get('entropy');
-        infoGain -= (probability * entropy)
-    }
+    // now we find the specific conditional entropy for each value of X within segments of Y :
 
-    // TODO !!! If the sortedInputs has 0 matches for inputs, then information gain is 1 because there are no
-    // TODO !!! entropies to subtract !!!! Do not include branches with no inputs!!!!!
-    return {
-        informationGain: infoGain,
-        sortedInputs
-    };
 };
