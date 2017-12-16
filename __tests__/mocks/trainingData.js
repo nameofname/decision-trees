@@ -18,7 +18,7 @@ module.exports = [
         id : 3,
         name : 'three',
         intAttr : 2,
-        enumAttr : 'Y',
+        enumAttr : 'N',
         wordAttr : 'manface'
     }, {
         id : 4,
@@ -29,8 +29,14 @@ module.exports = [
     }, {
         id : 5,
         name : 'five',
-        intAttr : 3,
-        enumAttr : 'N',
+        intAttr : 1,
+        enumAttr : 'Y',
         wordAttr : 'shirt'
+    }, {
+        id : 6,
+        name : 'six',
+        intAttr : 1,
+        enumAttr : 'Y',
+        wordAttr : 'ronald'
     }
 ];

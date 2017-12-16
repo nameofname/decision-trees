@@ -1,63 +1,7 @@
 "use strict";
 
-const SortedInputMap = require('./SortedInputMap');
+// const SortedInputMap = require('./SortedInputMap');
 
-// /**
-//  * This helper function builds a sorted map of the training data. The sorted output will be a map with 2 levels :
-//  *      L1 : a layer of maps, keyed on each attribute value
-//  *      L2 : a layer of arrays, each array including inputs sorted by class (classification)
-//  * Full structure is :
-//  *      - Map {
-//  *          [attribute value] : Map {
-//  *              total : number
-//  *              values : Map {
-//  *                  [category value] : [Array], ...
-//  *              }
-//  *          }, ...
-//  *      }
-//  * @param trainingData
-//  * @param attributeMapObject
-//  * @param classificationMapObject
-//  * @private
-//  */
-// const _buildSortedValueMap = (trainingData, attributeMapObject, classificationMapObject) => {
-//     const sortedInputs = new Map();
-//     const attrVals = attributeMapObject.values;
-//     const classVals = classificationMapObject.values;
-//
-//     trainingData.forEach(input => {
-//         attrLoop:
-//             for (var i = 0; i < attrVals.length; i++) {
-//                 const attrMatch = attributeMapObject.test(input, attrVals[i]);
-//                 if (attrMatch) {
-//                     if (!sortedInputs.get(attrVals[i])) {
-//                         const newMap = new Map();
-//                         newMap.set('values', new Map());
-//                         newMap.set('total', 0);
-//                         newMap.set('entropy', 0);
-//                         sortedInputs.set(attrVals[i], newMap);
-//                     }
-//                     const currAttrMap = sortedInputs.get(attrVals[i]);
-//                     classLoop:
-//                         for (var j = 0; j < classVals.length; j++) {
-//                             const classMatch = classificationMapObject.test(input, classVals[j]);
-//                             if (classMatch) {
-//                                 if (!currAttrMap.get('values').get(classVals[j])) {
-//                                     currAttrMap.get('values').set(classVals[j], []);
-//                                 }
-//                                 const currBucket = currAttrMap.get('values').get(classVals[j]);
-//                                 currBucket.push(input);
-//                                 currAttrMap.set('total', (currAttrMap.get('total') + 1));
-//                                 break classLoop;
-//                             }
-//                         }
-//                     break attrLoop;
-//                 }
-//             }
-//     });
-//
-//     return sortedInputs;
-// };
 
 // probability (used in entropy)
 const _probability = (val, total) => (val / total);
@@ -75,21 +19,14 @@ const entropyForSeries = (catMap, total) => {
 
 
 /**
- * Calculate the information gain at a specified branch node.
- * what do you need to take in the info gain?
- *
- * @param trainingData <array> - an array of objects, each one is a data input having all of the attributes expressed
- *      in the attributeMap
- * @param attributeMapObject <object> - an object with information about a given attribute. This comes from the
- *      attribute map builder. Includes :
- *      - name
- *      - type (number, word, date, enum)
- *      - possible values
- *      - test function - a function to test a training input against the attribute value
- * @param classificationMapObject <object> - same as attributeMapObject, but for the classification attribute instead
- *      of the attribute value.
+ * Calculate the information gain for a given field to another field
  */
-const ig = (trainingData, attributeMapObject, classificationMapObject) => {
+module.exports = (trainingData, allTehTings) => {
+    //
+};
+
+
+const ig_bak = (trainingData, attributeMapObject, classificationMapObject) => {
     // here we want to sort each training input into a 2 teir list which is keyed on the attribute value and the
     // input classification. First build the data structure your inputs will fall into :
     const totalLength = trainingData.length;
@@ -118,11 +55,9 @@ const ig = (trainingData, attributeMapObject, classificationMapObject) => {
     }
 
     // TODO !!! If the sortedInputs has 0 matches for inputs, then information gain is 1 because there are no
-    // TODO !!! entropies to subtract !!!! Do not include branches with no inputs!!!!! 
+    // TODO !!! entropies to subtract !!!! Do not include branches with no inputs!!!!!
     return {
         informationGain: infoGain,
         sortedInputs
     };
 };
-
-module.exports = ig;
