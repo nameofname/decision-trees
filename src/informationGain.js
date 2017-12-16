@@ -46,6 +46,12 @@ module.exports = (trainingData, categoryField, igField) => {
     // testing for
     // in this scenario, each igValue in the map represents a potential child node - and if we decide to branch
     // on that child node, the counts of each will become the node in question.
+    // TODO ! abstract away this data map into a class that does this action for each node
+    // TODO ! abstract away this data map into a class that does this action for each node
+    // TODO ! abstract away this data map into a class that does this action for each node
+    // basically each node should be a data map with a set of training data within itself !!!! and it should have a method
+    // to sub-divide based on a given ig field and category field.
+    // the IG function should be purely mathematical, this should be a part of the node.
     const dataMap = trainingData.reduce((map, obj) => {
         const { [categoryField]: catValue, [igField]: igValue } = obj;
         if (!map.get(igValue)) {
