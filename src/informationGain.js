@@ -18,15 +18,35 @@ const entropyForSeries = (catMap, total) => {
 };
 
 
+// TODO ! we are going to ignore the testFunctions for now and assume we can do this just by detecting probability of value X for igField
+
 /**
  * Calculate the information gain for a given field to another field
  */
 module.exports = (trainingData, categoryField, igField) => {
-    // TODO ! we are going to ignore the testFunctions for now and assume we can do this just by detecting probability of value X for igField
+
     let ig = 1;
+
+    // for each piece of training data, we want to calculate the probability that the igField will be a certain value
+    // and connect that to our category field to find the relationship between the two.
+    // to that end we start by building out a map of IG values to category values.
+    // the structure looks like this :
+    // Map {
+    //      igValue1: Map {
+    //          count : <number>,
+    //          categoryValue1: <number>,
+    //          categoryValue2: <number>,
+    //          ....
+    //      },
+    //      igValue2: Map { ... },
+    //      ...
+    // }
+    //
+    // what this tells us is the number of times each category input is associated with each ig input value we are
+    // testing for
+    // in this scenario, each igValue in the map represents a potential child node - and if we decide to branch
+    // on that child node, the counts of each will become the node in question.
     const dataMap = trainingData.reduce((map, obj) => {
-        // for each piece of training data, we want to calculate the probability that the igField will be a certain value
-        // and connect that to our category field to find the relationship between the two.
         const { [categoryField]: catValue, [igField]: igValue } = obj;
         if (!map.get(igValue)) {
             map.set(igValue, new Map());
@@ -45,7 +65,11 @@ module.exports = (trainingData, categoryField, igField) => {
         return map;
     }, new Map());
 
-    return dataMap;
+    dataMap.forEach((val, key) => {
+        //
+    });
+
+    return { dataMap };
 };
 
 
