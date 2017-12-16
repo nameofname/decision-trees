@@ -100,40 +100,59 @@ const informationGain = (trainingData, parentNodeCount, classificationField, igF
  */
 
 /**
- * For various values of X, what is the entropy of Y
- *      ∑ P(X=v) * H(Y|X=v)
- *      - P(X=v) is the probability X = v
- *      - H(Y|X=v) is the entropy of Y given that X = v
- * @param summaryArray
- */
-const conditionalEntropy = summaryArray => {
-    let conditionalEntropy = 0;
-    for (let obj of summaryArray) {
-        const { probability, specificConditionalEntropy } = obj;
-        conditionalEntropy += probability * specificConditionalEntropy;
-    }
-    return conditionalEntropy;
-};
-
-/**
+ * For various values of X, what is the entropy of Y -
+ * this is known as the conditional entropy and it is comprised of many specific conditional entropies.
+ *
+ * ∑ P(X=v) * H(Y|X=v)
+ *      - P(X=v) <Probability> is the probability X = v
+ *      - H(Y|X=v) <Specific Conditional Entropy> is the entropy of Y given that X = v
+ *
  * Given the training data and segmented on Y, what is the specific conditional entropy of
  * I don't know how to write this, so I'm going to start as if I had my data segmented ...
  */
-const specificConditionalEntropies = (data, segmentedOn, classificationField) => {
-    for (let segment of data) {
+const conditionalEntropy = (data, segmentedOn, classificationField) => {
+
+    const { segments, totalCount } = data;
+
+    for (let segment of segments) {
         const { trainingData } = segment;
         // here we must find counts for the different values of X :
         // TODO ! perhaps we can do this while segmenting the data - simply increment each value of X within the counter map!
         // TODO ! that would save time.
-        segment.valuesOfXPerSegment = trainingData
+        segment.valuesOfX = trainingData
             .reduce((map, curr) => {
                 const value = curr[classificationField];
-                map[value] = map[value] || 0;
-                ++map[value];
+                if (Number(map.get(valu3)) !== map.get(valu3)) {
+                    map.set(value, 0);
+                }
+                map.set(value, map.get(value) + 1);
                 return map;
-            }, {});
+            }, new Map());
     }
 
     // now we find the specific conditional entropy for each value of X within segments of Y :
+    for (let segment of segments) {
+        const count = segment.trainingData.length;
+        // to get the specific conditional entropy - we calculate the entropy of X within this bucket.
+        const specificConditionalEntropy = segment.valuesOfX
+            .reduce((specificEntropy, num) => {
+                const probability = num / count;
+                const entropyOfX = probability * Math.log2(probability);
+                return specificEntropy + entropyOfX;
+            });
 
+        segment.probability = segment.trainingData.length / totalCount;
+        segment.specificConditionalEntropy = specificConditionalEntropy;
+    }
+
+    const conditionalEntropy = segments => {
+        let conditionalEntropy = 0;
+        for (let segment of segments) {
+            const { probability, specificConditionalEntropy } = segment;
+            conditionalEntropy += probability * specificConditionalEntropy;
+        }
+        return conditionalEntropy;
+    };
+
+    return conditionalEntropy;
 };
