@@ -110,12 +110,11 @@ const informationGain = (trainingData, parentNodeCount, classificationField, igF
  * Given the training data and segmented on Y, what is the specific conditional entropy of
  * I don't know how to write this, so I'm going to start as if I had my data segmented ...
  */
-const informationGain = (data, segmentedOn, classificationField) => {
+const informationGain = (children, totalCount, classificationField) => {
 
-    const { segments, totalCount } = data;
-    data.entropy = 0;
+    let entropy = 0;
 
-    for (let segment of segments) {
+    for (let segment of children) {
         const { trainingData } = segment;
         // here we must find counts for the different values of X :
         // TODO ! perhaps we can do this while segmenting the data - simply increment each value of X within the counter map!
@@ -131,11 +130,11 @@ const informationGain = (data, segmentedOn, classificationField) => {
             }, new Map());
 
         const probability = segment.trainingData.length / totalCount;
-        data.entropy -= probability * Math.log2(probability);
+        entropy -= probability * Math.log2(probability);
     }
 
-    // now we find the specific conditional entropy for each value of X within segments of Y :
-    for (let segment of segments) {
+    // now we find the specific conditional entropy for each value of X within children of Y :
+    for (let segment of children) {
         const count = segment.trainingData.length;
         // to get the specific conditional entropy - we calculate the entropy of X within this bucket.
         const specificConditionalEntropy = segment.valuesOfX
@@ -149,16 +148,22 @@ const informationGain = (data, segmentedOn, classificationField) => {
         segment.specificConditionalEntropy = specificConditionalEntropy;
     }
 
-    data.conditionalEntropy = segments => {
+    const conditionalEntropy = children => {
         let conditionalEntropy = 0;
-        for (let segment of segments) {
+        for (let segment of children) {
             const { probability, specificConditionalEntropy } = segment;
             conditionalEntropy += probability * specificConditionalEntropy;
         }
         return conditionalEntropy;
     };
 
-    return data.entropy - data.conditionalEntropy;
+    const informationGain = entropy - conditionalEntropy;
+
+    return {
+        informationGain,
+        conditionalEntropy,
+        entropy
+    }
 };
 
 module.exports = informationGain;
