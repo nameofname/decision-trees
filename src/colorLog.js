@@ -3,7 +3,7 @@
 /**
  * Enhanced console logger, supports all colors from colors module. Includes colors list method.
  * USAGE :
- *      var log = require('./lib/log');
+ *      var log = require('./src/log');
  *      log.red('ERROR : this is an error');
  *      log.green('SUCCESS : this is a success message');
  * @type {exports}

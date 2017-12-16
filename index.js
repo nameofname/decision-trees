@@ -5,7 +5,7 @@ require('./babelHook');
 require('babel-polyfill');
 
 const mockData = require('./config/mockData');
-const decisionTree = require('./lib/decisionTreeBuilder');
+const decisionTree = require('./src/decisionTreeBuilder');
 
 
 decisionTree(mockData)
