@@ -1,22 +1,5 @@
 "use strict";
 
-// const SortedInputMap = require('./SortedInputMap');
-const COUNT = '__________________COUNT__';
-
-// probability (used in entropy)
-const _probability = (val, total) => (val / total);
-// entropy iterator is a single step in calculating entropy of a series
-const _entropyIterator = (val, total) => (_probability(val, total) * Math.log2(_probability(val, total)));
-// get the entropy for a single series :
-// to calculate entropy, for each probability in series multiply by log2(probability) - subtract the result from prev
-const entropyForSeries = (catMap, total) => {
-    let out = 0;
-    for (let arr of catMap.values()) {
-        out -= _entropyIterator(arr.length, total);
-    }
-    return out;
-};
-
 
 /**
  * Calculate the information gain for a given field to another field
@@ -32,13 +15,6 @@ const entropyForSeries = (catMap, total) => {
  *  - classification field
  *  - IG field
  */
-const informationGain = (trainingData, parentNodeCount, classificationField, igField) => {
-
-    const proposedChildCount = trainingData.length;
-    const probability = proposedChildCount / parentNodeCount;
-    let ig = 1;
-
-};
 
 /**
  * To get the information gain, you first get the entropy for each proposed child node.

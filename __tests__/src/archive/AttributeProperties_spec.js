@@ -1,9 +1,9 @@
 "use strict";
 
 
-const AttributeProperties = require('../../src/AttributeProperties');
-const trainingData = require('../mocks/trainingData');
-const attributeColumns = require('../mocks/attributes');
+const AttributeProperties = require('../../../src/archive/AttributeProperties');
+const trainingData = require('../../mocks/trainingData');
+const attributeColumns = require('../../mocks/attributes');
 const numberTypes = ['int', 'decimal', 'bigint', 'float', 'float unsigned', 'tinyint'];
 const wordTypes = ['varchar', 'tinytext', 'text', 'mediumtext'];
 

@@ -1,8 +1,8 @@
 "use strict";
 
 
-const SortedInputMap = require('../../src/SortedInputMap');
-const trainingData = require('../mocks/trainingData');
+const SortedInputMap = require('../../../src/archive/SortedInputMap');
+const trainingData = require('../../mocks/trainingData');
 const attributeValues = trainingData.map(({ wordAttr }) => wordAttr);
 const classificationVals = trainingData.map(({ enumAttr }) => enumAttr);
 const attributeTest = (input, val) => input.wordAttr === val;
