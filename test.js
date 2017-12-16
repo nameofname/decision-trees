@@ -2,8 +2,8 @@
 
 // TODO ! I don't need any of the babel deps any more. ... unless I want to start using import.
 // require('./babelHook');
-// const AttributesMap = require('./lib/AttributesMap');
-const SortedInputMap = require('./lib/SortedInputMap');
+// const AttributesMap = require('./src/AttributesMap');
+const SortedInputMap = require('./src/SortedInputMap');
 const mock = require('./config/mockData');
 const trainingData = require('./__tests__/mocks/trainingData');
 const attributes = require('./__tests__/mocks/attributes');
