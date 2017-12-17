@@ -16,7 +16,10 @@ This is a great video which covers most of the concepts I use in this repository
 
 
 ## TODO :
-- [x] add jest unit tests
-- [ ] re factor sorted inputs away from inforomationGain.js and assign to a class
-- [ ] create classes to store attribute map and sorted inputs
-- [ ] complete recursion
+[ ] complete branching logic
+[ ] flush out unit tests
+[ ] run more test data through tests to validate that I am calculating IG correctly
+[ ] add trace, error, info logging
+[ ] contrive queries to discover relationships between data
+[ ] create trees based on those queries
+[ ] pretty print conclusions based on those queries

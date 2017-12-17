@@ -35,18 +35,38 @@ class DecisionTreeNode {
         this.children = null;
         this.branchAttribute = null;
         this.classValueCounts = new Map(); // counts for values of X (class attribute values) - used in calculating entropy
-        this.probability = null; // probability of being in this bucket, in relation to parent
+        this.probability = null; // probability of being in this bucket with regards to parent
         this.informationGain = null;
         this.conditionalEntropy = null;
         this.entropy = null;
     }
 
+    /**
+     * for each attribute :
+     *      - create children
+     *      - find IG of new children
+     *      - if IG is higher than current, discard previous, and continue with current
+     *      - repeat until done: the resulting children become our new children
+     */
     branch () {
-        // for each attribute :
-        // create children
-        // pass those children to IG method
-        // if IG is higher than current, re-assign children to proposed children
-        // repeat until done.
+        let newChildren;
+        const { classAttribute } = this;
+
+        const bestFit = this.attributeList.reduce((prev, attribute) => {
+            if (attribute === classAttribute) {
+                return prev;
+            }
+            const children = this.createChildrenFromAttribute(attribute);
+            const stats = this.findIgOfChildren(children);
+            if (prev === undefined) {
+                return { stats, children };
+            } else {
+                const prevIg = prev.stats.informationGain;
+                return stats.informationGain > prevIg ? { stats, children } : prev;
+            }
+        }, undefined);
+
+        return bestFit;
     }
 
     /**

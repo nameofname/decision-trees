@@ -78,9 +78,21 @@ describe.only('DecisionTreeNode', ()=> {
 
         beforeEach(createCollegeNode);
 
-        it('should return something', () => {
+        it('should calculate correct entropy, conditionalEntropy and informationGain for college training data', () => {
             const childMap = node.createChildrenFromAttribute('major');
             const result = node.findIgOfChildren(childMap);
+            expect(result).toEqual({ entropy: 1, conditionalEntropy: 0.5, informationGain: 0.5 });
+        });
+
+    });
+
+    describe('branch', () => {
+
+        beforeEach(createCollegeNode);
+
+        it('should branch on major field for college training data, because that\'s the only field', () => {
+            const result = node.branch();
+            console.log(result);
             expect(result).toEqual({ entropy: 1, conditionalEntropy: 0.5, informationGain: 0.5 });
         });
 
