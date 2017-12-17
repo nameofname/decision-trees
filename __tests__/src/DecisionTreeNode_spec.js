@@ -64,7 +64,6 @@ describe.only('DecisionTreeNode', ()=> {
 
         it('should count different values for class attribute while building list ', () => {
             const childMap = node.createChildrenFromAttribute('major');
-            console.log(childMap)
             expect(childMap.get('Math').classValueCounts.get(true)).toEqual(2);
             expect(childMap.get('Math').classValueCounts.get(false)).toEqual(2);
             expect(childMap.get('CS').classValueCounts.get(true)).toEqual(2);

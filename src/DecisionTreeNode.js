@@ -89,7 +89,7 @@ class DecisionTreeNode {
     };
 
     findIgOfChildren (proposedChildren) {
-        return informationGain(proposedChildren);
+        return informationGain(proposedChildren, this.trainingData.length);
     }
 
 }

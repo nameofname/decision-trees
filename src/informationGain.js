@@ -42,7 +42,7 @@ const informationGain = (children, totalCount) => {
     let entropy = 0;
 
     // now we find the specific conditional entropy for each value of X within children of Y :
-    for (let childNode of children) {
+    children.forEach(childNode => {
 
         const count = childNode.trainingData.length;
         let specificConditionalEntropy = 0;
@@ -54,15 +54,15 @@ const informationGain = (children, totalCount) => {
             return specificConditionalEntropy + entropyOfX;
         });
 
-        childNode.probability = childNode.trainingData.length / totalCount;
+        childNode.probability = count / totalCount;
         childNode.specificConditionalEntropy = specificConditionalEntropy;
-    }
+    });
 
     let conditionalEntropy = 0;
-    for (let childNode of children) {
+    children.forEach(childNode => {
         const { probability, specificConditionalEntropy } = childNode;
         conditionalEntropy += probability * specificConditionalEntropy;
-    }
+    });
 
     const informationGain = entropy - conditionalEntropy;
 
