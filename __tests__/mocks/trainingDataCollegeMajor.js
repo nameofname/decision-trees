@@ -7,9 +7,10 @@
     // Math: P = 0.5, E = 1
     // CS: P = 0.25, E = 0
     // History: 0.25 = x, E = 0
-// total conditional entropy = 0.5
-// entropy of Y = 1
-// information gain = 0.5 (from entropy of 1 = conditional entropy of 0.5)
+// RESULTS :
+    // conditional entropy = 0.5
+    // entropy of Y = 1
+    // information gain = 0.5 ( = (entropy of 1) - (conditional entropy 0.5))
 
 module.exports = [
     {
