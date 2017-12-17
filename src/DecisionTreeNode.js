@@ -1,6 +1,7 @@
 "use strict";
 
 const informationGain = require('./informationGain');
+const assert = require('assert');
 
 /**
  * Decision Tree Node shall have properties :
@@ -18,6 +19,10 @@ const informationGain = require('./informationGain');
 class DecisionTreeNode {
 
     constructor({ trainingData, parentCount, attributeList }) {
+
+        assert(Array.isArray(trainingData), 'DecisionTreeNode: trainingData must be an array');
+        assert(Number(parentCount) === parentCount, 'DecisionTreeNode: parentCount must be an number');
+        assert(Array.isArray(attributeList), 'DecisionTreeNode: attributeList must be an array');
 
         this.trainingData = trainingData; // array of training data objects
         this.parentCount = parentCount; // count of training data in parent node
@@ -76,3 +81,5 @@ class DecisionTreeNode {
     };
 
 }
+
+module.exports = DecisionTreeNode;

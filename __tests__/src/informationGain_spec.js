@@ -17,16 +17,16 @@ const trainingData = require('../mocks/trainingData');
 // };
 
 
-describe('buildAttributesMap', ()=> {
-
-    it('calculate a high IG for enumAttr and intAttr', () => {
-        console.log(informationGain(trainingData, 'intAttr', 'enumAttr'));
-        // expect(informationGain(trainingData, 'intAttr', 'enumAttr')).toEqual(0.5);
-    });
-
-    // it('calculate a lower IG for enumAttr and wordAttr', () => {
-    //     expect(informationGain(trainingData, 'intAttr', 'wordAttr')).toEqual(0.3);
-    // });
-
-});
-
+// describe('buildAttributesMap', ()=> {
+//
+//     it('calculate a high IG for enumAttr and intAttr', () => {
+//         console.log(informationGain(trainingData, 'intAttr', 'enumAttr'));
+//         // expect(informationGain(trainingData, 'intAttr', 'enumAttr')).toEqual(0.5);
+//     });
+//
+//     // it('calculate a lower IG for enumAttr and wordAttr', () => {
+//     //     expect(informationGain(trainingData, 'intAttr', 'wordAttr')).toEqual(0.3);
+//     // });
+//
+// });
+//
