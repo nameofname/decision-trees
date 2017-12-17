@@ -91,9 +91,16 @@ describe.only('DecisionTreeNode', ()=> {
         beforeEach(createCollegeNode);
 
         it('should branch on major field for college training data, because that\'s the only field', () => {
-            const result = node.branch();
-            console.log(result);
-            expect(result).toEqual({ entropy: 1, conditionalEntropy: 0.5, informationGain: 0.5 });
+            node.branch();
+            expect(node.children.get('Math') instanceof DecisionTreeNode).toEqual(true);
+            expect(node.children.get('Math').count()).toEqual(4);
+            expect(node.children.get('CS') instanceof DecisionTreeNode).toEqual(true);
+            expect(node.children.get('CS').count()).toEqual(2);
+            expect(node.children.get('History') instanceof DecisionTreeNode).toEqual(true);
+            expect(node.children.get('History').count()).toEqual(2);
+            expect(node.entropy).toEqual(1);
+            expect(node.conditionalEntropy).toEqual(0.5);
+            expect(node.informationGain).toEqual(0.5);
         });
 
     });

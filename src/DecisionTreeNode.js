@@ -48,8 +48,7 @@ class DecisionTreeNode {
      *      - if IG is higher than current, discard previous, and continue with current
      *      - repeat until done: the resulting children become our new children
      */
-    branch () {
-        let newChildren;
+    branch() {
         const { classAttribute } = this;
 
         const bestFit = this.attributeList.reduce((prev, attribute) => {
@@ -66,7 +65,12 @@ class DecisionTreeNode {
             }
         }, undefined);
 
-        return bestFit;
+        const { entropy, conditionalEntropy, informationGain } = bestFit.stats;
+        this.entropy = entropy;
+        this.conditionalEntropy = conditionalEntropy;
+        this.informationGain = informationGain;
+
+        this.children = bestFit.children;
     }
 
     /**
@@ -75,7 +79,7 @@ class DecisionTreeNode {
      * This method creates the children of this node based on a given attribute. Once that is done we can calculate the
      * IG of that decision, and figure out if it's the best fit.
      */
-    createChildrenFromAttribute (branchAttribute) {
+    createChildrenFromAttribute(branchAttribute) {
         const { trainingData, classAttribute } = this;
 
         const children = trainingData.reduce((childMap, trainingObj) => {
@@ -106,12 +110,15 @@ class DecisionTreeNode {
         }, new Map());
 
         return children;
-    };
+    }
 
-    findIgOfChildren (proposedChildren) {
+    findIgOfChildren(proposedChildren) {
         return informationGain(proposedChildren, this.trainingData.length);
     }
 
+    count() {
+        return this.trainingData.length;
+    }
 }
 
 module.exports = DecisionTreeNode;
