@@ -3,14 +3,29 @@
 
 const DecisionTreeNode = require('../../src/DecisionTreeNode');
 const trainingData = require('../mocks/trainingData');
+const trainingDataCollegeMajor = require('../mocks/trainingDataCollegeMajor');
 const attributeList = Object.keys(trainingData[0]);
+const collegeAttributeList = Object.keys(trainingDataCollegeMajor[0]);
 
 
 describe.only('DecisionTreeNode', ()=> {
 
     let node;
     const createNode = () => {
-        node = new DecisionTreeNode({ trainingData, parentCount: trainingData.length, attributeList })
+        node = new DecisionTreeNode({
+            trainingData,
+            parentCount: trainingData.length,
+            attributeList,
+            classAttribute: 'enumAttr'
+        });
+    };
+    const createCollegeNode = () => {
+        node = new DecisionTreeNode({
+            trainingData: trainingDataCollegeMajor,
+            parentCount: trainingDataCollegeMajor.length,
+            attributeList: collegeAttributeList,
+            classAttribute: 'likes'
+        });
     };
 
     it('should return an insance of DecisionTreeNode', () => {
@@ -30,6 +45,16 @@ describe.only('DecisionTreeNode', ()=> {
         expect(node.informationGain).toEqual(null);
         expect(node.conditionalEntropy).toEqual(null);
         expect(node.entropy).toEqual(null);
+    });
+
+    describe('createChildrenFromAttribute', () => {
+
+        beforeEach(createCollegeNode);
+
+        it('should return a Map', () => {
+            expect(node.createChildrenFromAttribute('major') instanceof Map).toEqual(true);
+        });
+
     });
 
 });

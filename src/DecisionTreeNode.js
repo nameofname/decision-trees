@@ -1,6 +1,5 @@
 "use strict";
 
-const informationGain = require('./informationGain');
 const assert = require('assert');
 
 /**
@@ -29,6 +28,7 @@ class DecisionTreeNode {
         this.trainingData = trainingData; // array of training data objects
         this.parentCount = parentCount; // count of training data in parent node
         this.attributeList = attributeList; // array of strings, field keys representing attributes on each TD object.
+        this.classAttribute = classAttribute; // this is the attribute we create our classes based on.
 
         // the following are calculated after calculating information gain for each attribute in the attribute list.
         this.branchAttribute = null;
@@ -37,55 +37,46 @@ class DecisionTreeNode {
         this.entropy = null;
     }
 
+    branch () {
+        // for each attribute :
+        // create children
+        // pass those children to IG method
+        // if IG is higher than current, re-assign children to proposed children
+        // repeat until done.
+    }
+
     /**
-     * for each piece of training data, we want to calculate the probability that the igField will be a certain value
-     * and connect that to our category field to find the relationship between the two.
-     * to that end we start by building out a map of IG values to category values.
-     * the structure looks like this :
-     * Map {
-     *      igValue1: Map {
-     *          count : <number>,
-     *          categoryValue1: <number>,
-     *          categoryValue2: <number>,
-     *          ....
-     *      },
-     *      igValue2: Map { ... },
-     *      ...
-     * }
-     *
-     * what this tells us is the number of times each category input is associated with each ig input value we are
-     * testing for
-     * in this scenario, each igValue in the map represents a potential child node - and if we decide to branch
-     * on that child node, the counts of each will become the node in question.
-     * basically each node should be a data map with a set of training data within itself !!!! and it should have a method
-     * to sub-divide based on a given ig field and category field.
-     * @param trainingData
-     * @param categoryField
-     * @param igField
-     * @returns {{dataMap: *}}
+     * Before we get the IG for a given attribute, we must know what children would look like for that attribute so
+     * we can calculate entropy of this node, and the conditional entropy of the children.
+     * This method creates the children of this node based on a given attribute. Once that is done we can calculate the
+     * IG of that decision, and figure out if it's the best fit.
      */
-    createStagedChildren (trainingData, categoryField, igField) {
-        const dataMap = trainingData.reduce((map, obj) => {
-            const { [categoryField]: catValue, [igField]: igValue } = obj;
-            if (!map.get(igValue)) {
-                map.set(igValue, new Map());
-                map.get(igValue).set(COUNT, 0);
+    createChildrenFromAttribute (branchAttribute) {
+        const { trainingData, classAttribute } = this;
+
+        const children = trainingData.reduce((childMap, trainingObj) => {
+
+            const { [branchAttribute]: branchAttrValue } = trainingObj;
+            if (!childMap.get(branchAttrValue)) {
+                childMap.set(branchAttrValue, new DecisionTreeNode({
+                    trainingData: [],
+                    parentCount: trainingData.length,
+                    attributeList: this.attributeList.filter(name => name !== branchAttribute),
+                    classAttribute
+                }));
             }
 
-            const igMap = map.get(igValue);
-            igMap.set(COUNT, igMap.get(COUNT) + 1);
+            childMap.get(branchAttrValue).trainingData.push(trainingObj);
+            return childMap;
 
-            if (!igMap.get(catValue)) {
-                igMap.set(catValue, 1);
-            } else {
-                igMap.set(catValue, (igMap.get(catValue) + 1));
-            }
-
-            return map;
         }, new Map());
 
-        return { dataMap };
+        return children;
     };
+
+    findIgOfChildren (proposedChildren) {
+        // helper to branch method
+    }
 
 }
 
