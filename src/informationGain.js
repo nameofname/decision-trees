@@ -2,34 +2,33 @@
 
 
 /**
- * Calculate the information gain for a given field to another field
+ * Calculate the information gain for a given field to another field.
+ * This takes an array of DecisionTreeNode instances which have not yet been branched.
  *
- * NOTES : Here I have already sub-divided my data at a given node
- * Therefore, I know the total count, and the training data at the proposed child
- * The IG will be a measure of the relationship between values of classification data point and data point X - where
- * we want to know how much data point X correlates with the classification data.
+ * Assume we are considering 2 attributes, X and Y.
+ * X is our class attribute, and Y is our branch attribute.
  *
- * SO - what data will we need ?
- *  - Training data
- *  - total count (at current node)
- *  - classification field
- *  - IG field
- */
-
-/**
- * To get the information gain, you first get the entropy for each proposed child node.
- * To get the entropy for a given child node, the formula is :
- *      ∑
- * @param trainingData
- * @param parentNodeCount
- * @param classificationField
- * @param igField
- */
-
-/**
- * For various values of X, what is the entropy of Y -
- * this is known as the conditional entropy and it is comprised of many specific conditional entropies.
+ * To get the information gain, you :
+ *      - take the entropy of the parent node with regards to X (class attribute)
+ *      - and subtract the conditional entropy of the child nodes
+ *      - to get the conditional entropy we must sum over the specific conditional entropy of the child nodes.
+ *      - specific conditional entropy is the entropy of X within a child node (segmented by Y)
  *
+ * Formulas :
+ *      - Probability of X having value v
+ *          - "the probability that attribute X takes value v"
+ *          P(X=v) = v / N
+ *      - Entropy of X
+ *          - "the uncertainty of attribute X equaling value v"
+ *          H(X) = - ∑ P(X=v) * log2(P(X=v))
+ *      - Specific Conditional Entropy of X
+ *          - "the uncertainty of attribute X equaling value v given that we know the value of Y"
+ *          H(X|Y=v) = - ∑ H(X=v)
+ *      - Conditional Entropy of X
+ *          - "the average specific conditional entropy of Y"
+ *          H(X|Y) = ∑ P(X=v) * H(X|Y=v)
+ *      - Information Gain
+ *          ∑ H(X=v) * H(Y|X=v)
  * ∑ P(X=v) * H(Y|X=v)
  *      - P(X=v) <Probability> is the probability X = v
  *      - H(Y|X=v) <Specific Conditional Entropy> is the entropy of Y given that X = v
@@ -53,11 +52,10 @@ const informationGain = (children, totalCount) => {
         // to get the specific conditional entropy - we calculate the entropy of X (class value) within this bucket.
         childNode.classValueCounts.forEach((num, key) => {
             const specificClassProbability = num / count;
-            const entropyOfX = specificClassProbability * Math.log2(specificClassProbability);
+            specificConditionalEntropy -= specificClassProbability * Math.log2(specificClassProbability);
             // aggregate values for class used in entropy of class value calculation :
             const aggregateClassValue = aggregateClassValues.get(key) || 0;
             aggregateClassValues.set(key, aggregateClassValue + num);
-            specificConditionalEntropy -= entropyOfX;
         });
 
         childNode.probability = probability;

@@ -81,8 +81,7 @@ describe.only('DecisionTreeNode', ()=> {
         it('should return something', () => {
             const childMap = node.createChildrenFromAttribute('major');
             const result = node.findIgOfChildren(childMap);
-            console.log(result);
-            expect(false).toEqual(true);
+            expect(result).toEqual({ entropy: 1, conditionalEntropy: 0.5, informationGain: 0.5 });
         });
 
     });
