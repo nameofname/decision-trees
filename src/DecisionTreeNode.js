@@ -35,6 +35,7 @@ class DecisionTreeNode {
         this.children = null;
         this.branchAttribute = null;
         this.classValueCounts = new Map(); // counts for values of X (class attribute values) - used in calculating entropy
+        this.probability = null; // probability of being in this bucket, in relation to parent
         this.informationGain = null;
         this.conditionalEntropy = null;
         this.entropy = null;

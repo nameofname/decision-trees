@@ -37,53 +37,32 @@
  * Given the training data and segmented on Y, what is the specific conditional entropy of
  * I don't know how to write this, so I'm going to start as if I had my data segmented ...
  */
-const informationGain = (children, totalCount, classificationField) => {
+const informationGain = (children, totalCount) => {
 
     let entropy = 0;
 
-    // TODO ! moved into where I create chidren
-    // for (let segment of children) {
-    //     const { trainingData } = segment;
-    //     // here we must find counts for the different values of X :
-    //     // TODO ! perhaps we can do this while segmenting the data - simply increment each value of X within the counter map!
-    //     // TODO ! that would save time.
-    //     segment.valuesOfX = trainingData
-    //         .reduce((map, curr) => {
-    //             const value = curr[classificationField];
-    //             if (Number(map.get(value)) !== map.get(value)) {
-    //                 map.set(value, 0);
-    //             }
-    //             map.set(value, map.get(value) + 1);
-    //             return map;
-    //         }, new Map());
-    //
-    //     const probability = segment.trainingData.length / totalCount;
-    //     entropy -= probability * Math.log2(probability);
-    // }
-
     // now we find the specific conditional entropy for each value of X within children of Y :
-    for (let segment of children) {
-        const count = segment.trainingData.length;
-        // to get the specific conditional entropy - we calculate the entropy of X within this bucket.
-        const specificConditionalEntropy = segment.valuesOfX
-            .reduce((specificEntropy, num) => {
-                const probability = num / count;
-                const entropyOfX = probability * Math.log2(probability);
-                return specificEntropy + entropyOfX;
-            });
+    for (let childNode of children) {
 
-        segment.probability = segment.trainingData.length / totalCount;
-        segment.specificConditionalEntropy = specificConditionalEntropy;
+        const count = childNode.trainingData.length;
+        let specificConditionalEntropy = 0;
+
+        // to get the specific conditional entropy - we calculate the entropy of X within this bucket.
+        childNode.classValueCounts.forEach(num => {
+            const probability = num / count;
+            const entropyOfX = probability * Math.log2(probability);
+            return specificConditionalEntropy + entropyOfX;
+        });
+
+        childNode.probability = childNode.trainingData.length / totalCount;
+        childNode.specificConditionalEntropy = specificConditionalEntropy;
     }
 
-    const conditionalEntropy = children => {
-        let conditionalEntropy = 0;
-        for (let segment of children) {
-            const { probability, specificConditionalEntropy } = segment;
-            conditionalEntropy += probability * specificConditionalEntropy;
-        }
-        return conditionalEntropy;
-    };
+    let conditionalEntropy = 0;
+    for (let childNode of children) {
+        const { probability, specificConditionalEntropy } = childNode;
+        conditionalEntropy += probability * specificConditionalEntropy;
+    }
 
     const informationGain = entropy - conditionalEntropy;
 
