@@ -39,7 +39,7 @@
  */
 const informationGain = (children, totalCount) => {
 
-    let entropy = 0; // TODO ! I am getting entropy of X, but I need entropy of Y!! !!! !!!! !!!!! !!!!!! !!!!!!! !!!!!!!!
+    let entropy = 0;
     let conditionalEntropy = 0;
     const aggregateClassValues = new Map();
 
