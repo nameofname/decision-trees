@@ -1,6 +1,7 @@
 "use strict";
 
 const assert = require('assert');
+const informationGain = require('./informationGain');
 
 /**
  * Decision Tree Node shall have properties :
@@ -12,7 +13,7 @@ const assert = require('assert');
  *      - parentCount: same from parent, for calculating probability
  *      - probability
  *      - entropy: from counts child nodes
- *      - conditionalEntropy: entropy of classification data values within child nodes
+ *      - conditionalEntropy: entropy of class data values within child nodes
  *      - IG: the information gained by branching on the branchAttribute
  *
  */
@@ -31,7 +32,9 @@ class DecisionTreeNode {
         this.classAttribute = classAttribute; // this is the attribute we create our classes based on.
 
         // the following are calculated after calculating information gain for each attribute in the attribute list.
+        this.children = null;
         this.branchAttribute = null;
+        this.classValueCounts = new Map(); // counts for values of X (class attribute values) - used in calculating entropy
         this.informationGain = null;
         this.conditionalEntropy = null;
         this.entropy = null;
@@ -56,7 +59,11 @@ class DecisionTreeNode {
 
         const children = trainingData.reduce((childMap, trainingObj) => {
 
-            const { [branchAttribute]: branchAttrValue } = trainingObj;
+            const {
+                [branchAttribute]: branchAttrValue,
+                [classAttribute]: classValue
+            } = trainingObj;
+
             if (!childMap.get(branchAttrValue)) {
                 childMap.set(branchAttrValue, new DecisionTreeNode({
                     trainingData: [],
@@ -66,7 +73,13 @@ class DecisionTreeNode {
                 }));
             }
 
-            childMap.get(branchAttrValue).trainingData.push(trainingObj);
+            // push training data object to child node
+            const childNode = childMap.get(branchAttrValue);
+            childNode.trainingData.push(trainingObj);
+            // increment counter for class value in child node class value counts
+            const classValueCount = childNode.classValueCounts.get(classValue) || 0;
+            childNode.classValueCounts.set(classValue, classValueCount + 1);
+
             return childMap;
 
         }, new Map());
@@ -75,7 +88,7 @@ class DecisionTreeNode {
     };
 
     findIgOfChildren (proposedChildren) {
-        // helper to branch method
+        return informationGain(proposedChildren);
     }
 
 }

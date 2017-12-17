@@ -55,6 +55,37 @@ describe.only('DecisionTreeNode', ()=> {
             expect(node.createChildrenFromAttribute('major') instanceof Map).toEqual(true);
         });
 
+        it('should correctly segment our data', () => {
+            const childMap = node.createChildrenFromAttribute('major');
+            expect(childMap.get('Math').trainingData.length).toEqual(4);
+            expect(childMap.get('CS').trainingData.length).toEqual(2);
+            expect(childMap.get('History').trainingData.length).toEqual(2);
+        });
+
+        it('should count different values for class attribute while building list ', () => {
+            const childMap = node.createChildrenFromAttribute('major');
+            console.log(childMap)
+            expect(childMap.get('Math').classValueCounts.get(true)).toEqual(2);
+            expect(childMap.get('Math').classValueCounts.get(false)).toEqual(2);
+            expect(childMap.get('CS').classValueCounts.get(true)).toEqual(2);
+            expect(childMap.get('CS').classValueCounts.get(false)).toEqual(undefined);
+            expect(childMap.get('History').classValueCounts.get(true)).toEqual(undefined);
+            expect(childMap.get('History').classValueCounts.get(false)).toEqual(2);
+        });
+
+    });
+
+    describe('findIgOfChildren', () => {
+
+        beforeEach(createCollegeNode);
+
+        it('should return something', () => {
+            const childMap = node.createChildrenFromAttribute('major');
+            const result = node.findIgOfChildren(childMap);
+            console.log(result);
+            expect(false).toEqual(true);
+        });
+
     });
 
 });

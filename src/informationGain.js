@@ -41,24 +41,25 @@ const informationGain = (children, totalCount, classificationField) => {
 
     let entropy = 0;
 
-    for (let segment of children) {
-        const { trainingData } = segment;
-        // here we must find counts for the different values of X :
-        // TODO ! perhaps we can do this while segmenting the data - simply increment each value of X within the counter map!
-        // TODO ! that would save time.
-        segment.valuesOfX = trainingData
-            .reduce((map, curr) => {
-                const value = curr[classificationField];
-                if (Number(map.get(value)) !== map.get(value)) {
-                    map.set(value, 0);
-                }
-                map.set(value, map.get(value) + 1);
-                return map;
-            }, new Map());
-
-        const probability = segment.trainingData.length / totalCount;
-        entropy -= probability * Math.log2(probability);
-    }
+    // TODO ! moved into where I create chidren
+    // for (let segment of children) {
+    //     const { trainingData } = segment;
+    //     // here we must find counts for the different values of X :
+    //     // TODO ! perhaps we can do this while segmenting the data - simply increment each value of X within the counter map!
+    //     // TODO ! that would save time.
+    //     segment.valuesOfX = trainingData
+    //         .reduce((map, curr) => {
+    //             const value = curr[classificationField];
+    //             if (Number(map.get(value)) !== map.get(value)) {
+    //                 map.set(value, 0);
+    //             }
+    //             map.set(value, map.get(value) + 1);
+    //             return map;
+    //         }, new Map());
+    //
+    //     const probability = segment.trainingData.length / totalCount;
+    //     entropy -= probability * Math.log2(probability);
+    // }
 
     // now we find the specific conditional entropy for each value of X within children of Y :
     for (let segment of children) {
