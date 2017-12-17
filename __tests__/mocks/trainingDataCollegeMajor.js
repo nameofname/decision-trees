@@ -8,8 +8,8 @@
     // CS: P = 0.25, E = 0
     // History: 0.25 = x, E = 0
 // RESULTS :
-    // conditional entropy = 0.5
     // entropy of Y = 1
+    // conditional entropy = 0.5
     // information gain = 0.5 ( = (entropy of 1) - (conditional entropy 0.5))
 
 module.exports = [

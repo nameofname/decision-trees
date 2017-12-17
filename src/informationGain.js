@@ -41,6 +41,7 @@ const informationGain = (children, totalCount) => {
 
     let entropy = 0; // TODO ! I am getting entropy of X, but I need entropy of Y!! !!! !!!! !!!!! !!!!!! !!!!!!! !!!!!!!!
     let conditionalEntropy = 0;
+    const aggregateClassValues = new Map();
 
     // now we find the specific conditional entropy for each value of X within children of Y :
     children.forEach(childNode => {
@@ -49,12 +50,13 @@ const informationGain = (children, totalCount) => {
         const probability = (count / totalCount);
         let specificConditionalEntropy = 0;
 
-        entropy -= probability * Math.log2(probability);
-
-        // to get the specific conditional entropy - we calculate the entropy of X within this bucket.
-        childNode.classValueCounts.forEach(num => {
-            const classProbability = num / count;
-            const entropyOfX = classProbability * Math.log2(classProbability);
+        // to get the specific conditional entropy - we calculate the entropy of X (class value) within this bucket.
+        childNode.classValueCounts.forEach((num, key) => {
+            const specificClassProbability = num / count;
+            const entropyOfX = specificClassProbability * Math.log2(specificClassProbability);
+            // aggregate values for class used in entropy of class value calculation :
+            const aggregateClassValue = aggregateClassValues.get(key) || 0;
+            aggregateClassValues.set(key, aggregateClassValue + num);
             specificConditionalEntropy -= entropyOfX;
         });
 
@@ -62,6 +64,13 @@ const informationGain = (children, totalCount) => {
         childNode.specificConditionalEntropy = specificConditionalEntropy;
 
         conditionalEntropy += probability * specificConditionalEntropy;
+    });
+
+    // Note* - we take the aggregate class value and calculate entropy - this gives us the entropy for X (our class
+    // value) over the training data of the parent node.
+    aggregateClassValues.forEach(num => {
+        const classProbability = num / totalCount;
+        entropy -= classProbability * Math.log2(classProbability);
     });
 
     const informationGain = entropy - conditionalEntropy;
