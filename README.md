@@ -16,10 +16,13 @@ This is a great video which covers most of the concepts I use in this repository
 
 
 ## TODO :
-[ ] complete branching logic
+[x] complete branching logic
+[ ] create and print a real tree
 [ ] flush out unit tests
 [ ] run more test data through tests to validate that I am calculating IG correctly
 [ ] add trace, error, info logging
 [ ] contrive queries to discover relationships between data
 [ ] create trees based on those queries
 [ ] pretty print conclusions based on those queries
+[ ] research use of using random forest
+[ ] figure out if i should be branching on the same attribute twice. Would that make sense ever? 

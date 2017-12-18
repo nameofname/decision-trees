@@ -3,8 +3,10 @@
 
 const createDecisionTree = require('../../src/createDecisionTree');
 const DecisionTreeNode = require('../../src/DecisionTreeNode');
-// const trainingData = require('../../mocks/trainingData');
+const trainingData = require('../../mocks/trainingData');
 const trainingDataCollegeMajor = require('../../mocks/trainingDataCollegeMajor');
+const logger = require('../logger');
+const printTree = require('../printTree');
 
 
 describe.only('createDecisionTree', ()=> {
@@ -19,7 +21,6 @@ describe.only('createDecisionTree', ()=> {
 
     it('should return the root node of your tree', () => {
         createTree();
-        // console.log(tree);
         expect(tree instanceof DecisionTreeNode).toEqual(true);
     });
 
@@ -28,6 +29,11 @@ describe.only('createDecisionTree', ()=> {
         ['Math', 'CS', 'History'].forEach(name => {
             expect(tree.children.get(name) instanceof DecisionTreeNode).toEqual(true);
         });
+    });
+
+    it('should build a multi-level tree for training data with many attributes', () => {
+        // createTree(trainingData);
+        logger.info(printTree(tree));
     });
 
 });

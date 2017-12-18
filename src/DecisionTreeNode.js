@@ -34,7 +34,7 @@ class DecisionTreeNode {
 
         // the following are calculated after calculating information gain for each attribute in the attribute list.
         this.children = null;
-        this.branchAttribute = null;
+        this.branchesOn = null; // the attribute that this node branches on.
         this.classValueCounts = new Map(); // counts for values of X (class attribute values) - used in calculating entropy
         // this.probability = null; // probability of being in this bucket with regards to parent // TODO ! needed?
         this.informationGain = null;
@@ -60,7 +60,7 @@ class DecisionTreeNode {
             const children = this.createChildrenFromAttribute(attribute);
             const stats = this.findIgOfChildren(children);
             if (prev === undefined) {
-                return { stats, children };
+                return { stats, children, attribute };
             } else {
                 const prevIg = prev.stats.informationGain;
                 return stats.informationGain > prevIg ? { stats, children } : prev;
@@ -78,6 +78,7 @@ class DecisionTreeNode {
         this.informationGain = informationGain;
 
         this.children = bestFit.children;
+        this.branchesOn = bestFit.attribute;
         return this.children;
     }
 

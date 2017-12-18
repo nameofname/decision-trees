@@ -41,7 +41,7 @@ describe('DecisionTreeNode', ()=> {
 
     it('should initialize with the correct properties set to null', () => {
         createNode();
-        expect(node.branchAttribute).toEqual(null);
+        expect(node.branchesOn).toEqual(null);
         expect(node.informationGain).toEqual(null);
         expect(node.conditionalEntropy).toEqual(null);
         expect(node.entropy).toEqual(null);
