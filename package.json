@@ -8,11 +8,6 @@
   "scripts": {
     "test": "./node_modules/.bin/jest --config ./jest.config.json"
   },
-  "jest": {
-    "setupFiles": [
-      "./setupJest.js"
-    ]
-  },
   "dependencies": {
     "babel-core": "^6.21.0",
     "babel-jest": "^18.0.0",

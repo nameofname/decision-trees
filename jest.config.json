@@ -1,3 +1,6 @@
 {
-  "bail": true
+  "bail": true,
+  "setupFiles": [
+    "./setupJest.js"
+  ]
 }
