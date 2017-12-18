@@ -12,6 +12,13 @@ module.exports = ({classAttribute, trainingData}) => {
         parentCount: trainingData.length
     });
 
-    // TODO ! recurse.
+    rootNode.branch();
+    console.log('????????????????????', rootNode.children);
+
+    // rootNode.children.forEach((child, key) => {
+    //     console.log('===================', key);
+    //     console.log(child)
+    // });
+
     return rootNode;
 };

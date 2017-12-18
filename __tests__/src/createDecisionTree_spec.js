@@ -13,7 +13,7 @@ describe.only('createDecisionTree', ()=> {
     const createTree = (trainingData = trainingDataCollegeMajor) => {
         tree = createDecisionTree({
             trainingData,
-            classAttribute: 'major'
+            classAttribute: 'likes'
         });
     };
 
