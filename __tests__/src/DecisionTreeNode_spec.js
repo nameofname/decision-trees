@@ -8,7 +8,7 @@ const attributeList = Object.keys(trainingData[0]);
 const collegeAttributeList = Object.keys(trainingDataCollegeMajor[0]);
 
 
-describe.only('DecisionTreeNode', ()=> {
+describe('DecisionTreeNode', ()=> {
 
     let node;
     const createNode = () => {
