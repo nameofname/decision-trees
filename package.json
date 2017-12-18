@@ -17,6 +17,8 @@
     "babel-preset-es2015-node4": "^2.1.1",
     "babel-preset-node6": "^11.0.0",
     "babel-register": "^6.18.0",
+    "colors": "^1.1.2",
+    "dotenv": "^4.0.0",
     "jest": "^21.2.1",
     "lodash.uniq": "^4.5.0",
     "mysql": "^2.12.0"

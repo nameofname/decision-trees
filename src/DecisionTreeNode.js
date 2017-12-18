@@ -2,6 +2,7 @@
 
 const assert = require('assert');
 const informationGain = require('./informationGain');
+const logger = require('./logger');
 
 /**
  * Decision Tree Node shall have properties :
@@ -49,6 +50,7 @@ class DecisionTreeNode {
      *      - repeat until done: the resulting children become our new children
      */
     branch() {
+        logger.trace(`DecisionTreeNode: branch`);
         const { classAttribute } = this;
 
         const bestFit = this.attributeList.reduce((prev, attribute) => {
@@ -87,7 +89,7 @@ class DecisionTreeNode {
      */
     createChildrenFromAttribute(branchAttribute) {
         const { trainingData, classAttribute } = this;
-        // console.log(`trying to createChildrenFromAttribute ${branchAttribute}`);
+        logger.trace(`DecisionTreeNode: createChildrenFromAttribute ${branchAttribute}`);
 
         const children = trainingData.reduce((childMap, trainingObj) => {
 

@@ -1,9 +1,10 @@
 "use strict";
 
 const DecisionTreeNode = require('./DecisionTreeNode');
+const logger = require('./logger');
 
 const doBranching = node => {
-    // console.log(`do branching recur ...`);
+    logger.trace(`RECURSION:doBranching`);
     const availableAttributes = node.attributeList.filter(n => n !== node.classAttribute);
 
     if (!availableAttributes.length) {
@@ -12,7 +13,7 @@ const doBranching = node => {
 
     const children = node.branch();
     children.forEach((child, key) => {
-        // console.log(`branching child of ${key}`);
+        logger.trace(`RECURSION:doBranching branching child of ${key}`);
         return doBranching(child);
     });
 

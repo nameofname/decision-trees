@@ -3,7 +3,7 @@
 
 const AttributeProperties = require('./AttributeProperties');
 const informationGain = require('./../informationGain');
-const log = require('./../colorLog');
+const log = require('./colorLog');
 let attributeProperties;
 let classAttr;
 
