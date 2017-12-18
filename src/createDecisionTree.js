@@ -3,7 +3,7 @@
 const DecisionTreeNode = require('./DecisionTreeNode');
 
 const doBranching = node => {
-    console.log(`do branching recur ...`);
+    // console.log(`do branching recur ...`);
     const availableAttributes = node.attributeList.filter(n => n !== node.classAttribute);
 
     if (!availableAttributes.length) {
@@ -12,7 +12,7 @@ const doBranching = node => {
 
     const children = node.branch();
     children.forEach((child, key) => {
-        console.log(`branching child of ${key}`);
+        // console.log(`branching child of ${key}`);
         return doBranching(child);
     });
 

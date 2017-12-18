@@ -87,7 +87,7 @@ class DecisionTreeNode {
      */
     createChildrenFromAttribute(branchAttribute) {
         const { trainingData, classAttribute } = this;
-        console.log(`trying to createChildrenFromAttribute ${branchAttribute}`);
+        // console.log(`trying to createChildrenFromAttribute ${branchAttribute}`);
 
         const children = trainingData.reduce((childMap, trainingObj) => {
 
