@@ -1,7 +1,7 @@
 "use strict";
 
 
-const AttributeProperties = require('../../../src/archive/AttributeProperties');
+const AttributeProperties = require('../.././AttributeProperties');
 const trainingData = require('../../mocks/trainingData');
 const attributeColumns = require('../../mocks/attributes');
 const numberTypes = ['int', 'decimal', 'bigint', 'float', 'float unsigned', 'tinyint'];
