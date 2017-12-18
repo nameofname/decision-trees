@@ -65,6 +65,11 @@ class DecisionTreeNode {
             }
         }, undefined);
 
+        if (bestFit === undefined) {
+            // in this case, there were no more attributes to branch on
+            return undefined;
+        }
+
         const { entropy, conditionalEntropy, informationGain } = bestFit.stats;
         this.entropy = entropy;
         this.conditionalEntropy = conditionalEntropy;
@@ -82,6 +87,7 @@ class DecisionTreeNode {
      */
     createChildrenFromAttribute(branchAttribute) {
         const { trainingData, classAttribute } = this;
+        console.log(`trying to createChildrenFromAttribute ${branchAttribute}`);
 
         const children = trainingData.reduce((childMap, trainingObj) => {
 
