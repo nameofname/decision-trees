@@ -90,6 +90,12 @@ describe('DecisionTreeNode', ()=> {
 
         beforeEach(createCollegeNode);
 
+        it('should return a map of children', () => {
+            const result = node.branch();
+            expect(result instanceof Map).toEqual(true);
+            expect(result).toEqual(node.children);
+        });
+
         it('should branch on major field for college training data, because that\'s the only field', () => {
             node.branch();
             expect(node.children.get('Math') instanceof DecisionTreeNode).toEqual(true);

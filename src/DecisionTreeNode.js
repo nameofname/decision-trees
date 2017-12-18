@@ -71,6 +71,7 @@ class DecisionTreeNode {
         this.informationGain = informationGain;
 
         this.children = bestFit.children;
+        return this.children;
     }
 
     /**

@@ -19,6 +19,7 @@ describe.only('createDecisionTree', ()=> {
 
     it('should return the root node of your tree', () => {
         createTree();
+        // console.log(tree);
         expect(tree instanceof DecisionTreeNode).toEqual(true);
     });
 
