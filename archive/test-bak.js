@@ -5,8 +5,8 @@
 // const AttributesMap = require('./src/AttributesMap');
 const SortedInputMap = require('./SortedInputMap');
 const mock = require('./../config/mockData');
-const trainingData = require('./../__tests__/mocks/trainingData');
-const attributes = require('./../__tests__/mocks/attributes');
+const trainingData = require('././mocks/trainingData');
+const attributes = require('././mocks/attributes');
 const attributeValues = trainingData.map(obj => {
     return obj.wordAttr;
 });

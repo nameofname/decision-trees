@@ -2,7 +2,7 @@
 
 
 const SortedInputMap = require('../.././SortedInputMap');
-const trainingData = require('../../mocks/trainingData');
+const trainingData = require('.././mocks/trainingData');
 const attributeValues = trainingData.map(({ wordAttr }) => wordAttr);
 const classificationVals = trainingData.map(({ enumAttr }) => enumAttr);
 const attributeTest = (input, val) => input.wordAttr === val;

@@ -3,8 +3,8 @@
 
 const createDecisionTree = require('../../src/createDecisionTree');
 const DecisionTreeNode = require('../../src/DecisionTreeNode');
-// const trainingData = require('../mocks/trainingData');
-const trainingDataCollegeMajor = require('../mocks/trainingDataCollegeMajor');
+// const trainingData = require('../../mocks/trainingData');
+const trainingDataCollegeMajor = require('../../mocks/trainingDataCollegeMajor');
 
 
 describe.only('createDecisionTree', ()=> {

@@ -2,8 +2,8 @@
 
 
 const DecisionTreeNode = require('../../src/DecisionTreeNode');
-const trainingData = require('../mocks/trainingData');
-const trainingDataCollegeMajor = require('../mocks/trainingDataCollegeMajor');
+const trainingData = require('../../mocks/trainingData');
+const trainingDataCollegeMajor = require('../../mocks/trainingDataCollegeMajor');
 const attributeList = Object.keys(trainingData[0]);
 const collegeAttributeList = Object.keys(trainingDataCollegeMajor[0]);
 
