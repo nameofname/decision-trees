@@ -49,6 +49,17 @@ const getType = value => {
     }
 };
 
+/**
+ * The true type follows intuitive rules. For example, if the type list includes boolean, then it could values like :
+ *      [0, 1, NULL, 3]
+ * In this case we should consider it a number because for it to be an actual boolean, it would only have 0 or 1 values.
+ * On the other hand, if we have a date, then we could have had values like this :
+ *      ['2016-05-09 11:00:00', 'popsicles', '2016-05-10 12:00:00', 'animal bones']
+ *      ['2016-05-09 11:00:00', NULL, NULL, '2016-05-10 12:00:00']
+ * In this case the first is not a date, it's a string, but the second is a date
+ * @param typeHistory
+ * @returns {*}
+ */
 const getTrueType = typeHistory => {
     if (typeHistory.includes(Date)) {
         if (typeHistory.includes(String)) {
@@ -79,6 +90,15 @@ const getTrueType = typeHistory => {
     }
 };
 
+/**
+ * Break a low and high number (or date) into ranges.
+ * @param low
+ * @param high
+ * @param segments
+ */
+const getRanges = (Type, low, high, segments = 3) => {
+    //
+};
 
 /**
  * Expects JSON converted from CSV file
@@ -142,13 +162,28 @@ module.exports = json => {
     });
 
     for (let entry of fieldDescriptions.entries()) {
+
         const [fieldName, val] = entry;
         const typeHistory = val.get('typeHistory');
+
+        let trueType = typeHistory[0];
         if (typeHistory.length > 1) {
-            console.log('------------------------------------------------')
-            console.log(fieldName, typeHistory, '==>', getTrueType(typeHistory));
+            trueType = getTrueType(typeHistory);
         }
 
+        val.set('trueType', trueType);
+
+        if (trueType === Number || trueType === Date) {
+            const suffix = trueType === Date ? 'Date' : 'Number';
+            const lowestKey = `lowest${suffix}`;
+            const highestKey = `highest${suffix}`;
+            const lowest = map.get(lowestKey);
+            const highest = map.get(highestKey);
+            const ranges = getRanges(trueType, lowest, hieghest);
+            // TODO ! assign ranges to values.
+        } else if (trueType === String) {
+            // TODO ! check the number of different strings! if it's relatively few, then proceed, otherwise, ignore.
+        }
     }
 
     return fieldDescriptions;
