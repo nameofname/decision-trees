@@ -37,10 +37,10 @@ const getType = value => {
             return null;
         case isMysqlDate(value) :
             return Date;
-        case isNumber(value) :
-            return Number;
         case isBool(value) :
             return Boolean;
+        case isNumber(value) :
+            return Number;
         case isString(value) :
             return String;
         default :
