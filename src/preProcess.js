@@ -96,8 +96,21 @@ const getTrueType = typeHistory => {
  * @param high
  * @param segments
  */
-const getRanges = (Type, low, high, segments = 3) => {
-    //
+const getRanges = (Type, low, high, segmentNum = 3) => {
+    // if (Type === Date) {
+    //     low = Date.parse(low);
+    //     high = Date.parse(high);
+    // }
+
+    const difference = high - low;
+    const segmentLength = difference / segmentNum;
+    const segments = [];
+
+    for (let i = 1; i <= segments; i++) {
+        segments.push(low + (segmentLength * i))
+    }
+
+    return segments;
 };
 
 /**
@@ -129,16 +142,28 @@ module.exports = json => {
             }
 
             // format ranges into a min and max :
-            if (type === Date || type === Number) {
+            if (type === Date || type === Number || type === Boolean) {
                 const suffix = type === Date ? 'Date' : 'Number';
                 const lowestKey = `lowest${suffix}`;
                 const highestKey = `highest${suffix}`;
-                const lowest = map.get(lowestKey);
-                const highest = map.get(highestKey);
+                let lowest = map.get(lowestKey);
+                let highest = map.get(highestKey);
 
-                if (value < lowest) {
+                if (type === Date) {
+                    lowest = Date.parse(lowest);
+                    highest = Date.parse(highest);
+                    value = Date.parse(value);
+                } else {
+                    value = Number(value);
+                }
+
+                if (type === Number && value !== 0) {
+                    console.log('wtf');
+                }
+                if (lowest === undefined || value < lowest) {
                     map.set(lowestKey, value);
-                } else if (value > highest) {
+                }
+                if (highest=== undefined || value > highest) {
                     map.set(highestKey, value);
                 }
             }
@@ -177,9 +202,11 @@ module.exports = json => {
             const suffix = trueType === Date ? 'Date' : 'Number';
             const lowestKey = `lowest${suffix}`;
             const highestKey = `highest${suffix}`;
-            const lowest = map.get(lowestKey);
-            const highest = map.get(highestKey);
-            const ranges = getRanges(trueType, lowest, hieghest);
+            const lowest = val.get(lowestKey);
+            const highest = val.get(highestKey);
+            const ranges = getRanges(trueType, lowest, highest);
+            console.log('--------------------------------------------')
+            console.log(highestKey, lowest, highest, ranges)
             // TODO ! assign ranges to values.
         } else if (trueType === String) {
             // TODO ! check the number of different strings! if it's relatively few, then proceed, otherwise, ignore.
