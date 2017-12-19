@@ -2,6 +2,7 @@
 
 
 const moment = require('moment');
+const logger = require('./logger');
 
 const isDate = date => moment(date).isValid();
 const isNumber = num => Number(num).toString() === num.toString();
@@ -18,7 +19,7 @@ const isBool = bool => {
 // if it's true, false, 0, or 1 - every time, it's boolean
 // but if it misses being boolean and it's a number, then it may be a number if we previously had only 0 and 1
 const getType = value => {
-    switch (value) {
+    switch (true) {
         case isDate(value) :
             return Date;
         case isNumber(value) :
@@ -42,32 +43,36 @@ const getType = value => {
  * Expects JSON converted from CSV file
  * @param json
  */
-moduel.exports = json => {
+module.exports = json => {
 
     const fieldDescriptions = new Map();
 
-    const newDescription = (fieldName) => {
-        if (!fieldDescriptions.get(fieldName)) {
-            fieldDescriptions.set(fieldName, new Map());
-            const map = fieldDescriptions.get(fieldName);
-            map.set('allValues', new Map());
-            map.set('valueRanges', new Map());
-            map.set('typeHistory', []);
-        }
+    const newDefinition = (fieldName) => {
+        logger.trace(`newDefinition for ${fieldName}`);
+        fieldDescriptions.set(fieldName, new Map());
+        const map = fieldDescriptions.get(fieldName);
+        map.set('allValues', new Map());
+        map.set('valueRanges', new Map());
+        map.set('typeHistory', []);
     };
 
     const addValue = (fieldName, value, type) => {
+        logger.trace(`addValue for ${fieldName} - ${value}`);
         const map = fieldDescriptions.get(fieldName);
-        map.get('allValues').set(value, true);
-        if (!map.get('typeHistory').includes(type)) {
-            map.get('typeHistory').push(type);
+        if (!map) {
+            logger.error(`could not find description for ${fieldName} - ${value}`)
+        } else {
+            map.get('allValues').set(value, true);
+            if (!map.get('typeHistory').includes(type)) {
+                map.get('typeHistory').push(type);
+            }
         }
     };
 
     json.forEach((obj, idx) => {
         Object.keys(obj).forEach(key => {
             if (idx === 0) {
-                newDescription(key)
+                newDefinition(key)
             }
 
             const val = obj[key];
