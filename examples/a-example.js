@@ -45,6 +45,12 @@ csv()
             process.exit(1);
         }
         logger.info('completed parsing CSV file', json[0]);
-        logger.info(preProcess(json));
+        // const res = preProcess(json);
+        logger.info(JSON.stringify(json));
+        let n = 0;
+        setInterval(() => {
+            console.log(json[n]);
+            ++n;
+        }, 2000)
     });
 

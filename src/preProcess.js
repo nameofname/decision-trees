@@ -4,10 +4,21 @@
 const moment = require('moment');
 const logger = require('./logger');
 
-const isDate = date => moment(date).isValid();
+const isDate = date => {
+    let isDate = false;
+    try {
+        isDate = moment(date).isValid()
+    } catch (e) {
+        isDate = false
+    }
+    return isDate;
+};
+const isMysqlDate = date => {
+    return moment(date, "YYYY-MM-DD HH:mm:ss", true).isValid(); // string parsing.
+};
 const isNumber = num => Number(num).toString() === num.toString();
 const isString = str => true;
-const isNull = n => n === null;
+const isNull = n => n === null || n === 'NULL';
 const isUndefined = n => n === undefined;
 const isBool = bool => {
     return [0, 1, true, false].includes(bool);
@@ -20,21 +31,51 @@ const isBool = bool => {
 // but if it misses being boolean and it's a number, then it may be a number if we previously had only 0 and 1
 const getType = value => {
     switch (true) {
-        case isDate(value) :
+        case isNull(value) :
+            return null;
+        case isUndefined(value) :
+            return null;
+        case isMysqlDate(value) :
             return Date;
         case isNumber(value) :
             return Number;
         case isBool(value) :
             return Boolean;
-        case isNull(value) :
-            return null;
-        case isUndefined(value) :
-            return undefined;
         case isString(value) :
-            return Number;
+            return String;
         default :
             logger.error('unable to find type for :', value);
             return undefined;
+    }
+};
+
+const getTrueType = typeHistory => {
+    if (typeHistory.includes(Date)) {
+        if (typeHistory.includes(String)) {
+            return String;
+        } else if (typeHistory.includes(Number)) {
+            return Number;
+        } else {
+            return Date;
+        }
+    }
+    if (typeHistory.includes(Number)) {
+        if (typeHistory.includes(String)) {
+            return String;
+        } else {
+            return Number;
+        }
+    }
+    if (typeHistory.includes(Boolean)) {
+        typeHistory = typeHistory.filter(t => t === Boolean);
+        if (typeHistory.length > 1) {
+            return getTrueType(typeHistory);
+        } else {
+            return typeHistory[0];
+        }
+    }
+    if (typeHistory.includes(String)) {
+        return String;
     }
 };
 
@@ -51,6 +92,7 @@ module.exports = json => {
         logger.trace(`newDefinition for ${fieldName}`);
         fieldDescriptions.set(fieldName, new Map());
         const map = fieldDescriptions.get(fieldName);
+        map.set('fieldName', fieldName);
         map.set('allValues', new Map());
         map.set('valueRanges', new Map());
         map.set('typeHistory', []);
@@ -59,14 +101,32 @@ module.exports = json => {
     const addValue = (fieldName, value, type) => {
         logger.trace(`addValue for ${fieldName} - ${value}`);
         const map = fieldDescriptions.get(fieldName);
-        if (!map) {
-            logger.error(`could not find description for ${fieldName} - ${value}`)
-        } else {
+
+        if (map) {
             map.get('allValues').set(value, true);
             if (!map.get('typeHistory').includes(type)) {
                 map.get('typeHistory').push(type);
             }
+
+            // format ranges into a min and max :
+            if (type === Date || type === Number) {
+                const suffix = type === Date ? 'Date' : 'Number';
+                const lowestKey = `lowest${suffix}`;
+                const highestKey = `highest${suffix}`;
+                const lowest = map.get(lowestKey);
+                const highest = map.get(highestKey);
+
+                if (value < lowest) {
+                    map.set(lowestKey, value);
+                } else if (value > highest) {
+                    map.set(highestKey, value);
+                }
+            }
+
+            return map;
         }
+
+        logger.error(`could not find description for ${fieldName} - ${value}`)
     };
 
     json.forEach((obj, idx) => {
@@ -80,6 +140,16 @@ module.exports = json => {
             addValue(key, val, type);
         });
     });
+
+    for (let entry of fieldDescriptions.entries()) {
+        const [fieldName, val] = entry;
+        const typeHistory = val.get('typeHistory');
+        if (typeHistory.length > 1) {
+            console.log('------------------------------------------------')
+            console.log(fieldName, typeHistory, '==>', getTrueType(typeHistory));
+        }
+
+    }
 
     return fieldDescriptions;
 };
