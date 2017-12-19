@@ -7,7 +7,7 @@ const colors = require('colors');
 const printTree = (node, currLevel = 0) => {
 
     const indent = new Array(currLevel).fill('|      ').join('');
-    const { branchesOn, classAttribute, informationGain } = node;
+    const { branchesOn, classAttribute, branchAttrValue, informationGain } = node;
     let classResults;
     let line;
 
@@ -20,10 +20,10 @@ const printTree = (node, currLevel = 0) => {
             ++p[val];
             return p;
         }, {});
-        line = `${indent}├── Leaf Node : Count (${node.count()}) Results (${JSON.stringify(classResults)})`;
+        line = `${indent}├── Leaf Node : BranchValue (${branchAttrValue}) Count (${node.count()}) Results (${JSON.stringify(classResults)})`;
 
     } else {
-        line = `${indent}├── ${branchesOn} IG (${colors.yellow(informationGain)}) Count (${node.count()})`;
+        line = `${indent}├── Branched On : ${branchesOn} IG (${colors.yellow(informationGain)}) BranchValue (${branchAttrValue}) Count (${node.count()})`;
     }
 
 

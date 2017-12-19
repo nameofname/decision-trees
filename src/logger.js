@@ -33,21 +33,21 @@ const log = (messages, color) => {
 };
 
 
-export const error = (...messages) => {
+const error = (...messages) => {
     const level = getLevel();
     return level > -1 ? log(messages, colors.red) : noop();
 };
-export const warn = (...messages) => {
+const warn = (...messages) => {
     const level = getLevel();
     return level > 0 ? log(messages, colors.yellow) : noop();
 };
-export const info = (...messages) => {
+const info = (...messages) => {
     const level = getLevel();
     return level > 1 ? log(messages, colors.blue) : noop();
 };
-export const trace = (...messages) => {
+const trace = (...messages) => {
     const level = getLevel();
     return level > 2 ? log(messages, colors.grey) : noop();
 };
 
-export default { error, warn, info, trace };
+module.exports = { error, warn, info, trace };

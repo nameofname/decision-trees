@@ -1,4 +1,5 @@
 config/database.js
+data/*
 node_modules
 .idea
 .env

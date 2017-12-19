@@ -12,10 +12,10 @@ const printTree = require('../printTree');
 describe.only('createDecisionTree', ()=> {
 
     let tree;
-    const createTree = (trainingData = trainingDataCollegeMajor) => {
+    const createTree = (trainingData = trainingDataCollegeMajor, classAttribute = 'likes') => {
         tree = createDecisionTree({
             trainingData,
-            classAttribute: 'likes'
+            classAttribute
         });
     };
 
@@ -32,8 +32,27 @@ describe.only('createDecisionTree', ()=> {
     });
 
     it('should build a multi-level tree for training data with many attributes', () => {
-        // createTree(trainingData);
+        tree = createDecisionTree({
+            trainingData,
+            classAttribute: 'intAttr'
+        });
+        expect(tree.children.get(1).children.get('one') instanceof DecisionTreeNode).toEqual(true);
+        // note - in this case we should have a very ineffective tree, because we didn't ignore attributes that don't
+        // tell us much
+        expect(tree.branchesOn).toEqual('id');
+        expect(tree.children.get(1).branchesOn).toEqual('name');
+        expect(tree.children.get(1).children.get('one').branchesOn).toEqual('enumAttr');
+    });
+
+    it('should not branch on attributes in the ignoreAttributes argument', () => {
+        tree = createDecisionTree({
+            trainingData,
+            classAttribute: 'intAttr',
+            ignoreAttributes: ['id', 'name']
+        });
         logger.info(printTree(tree));
+        expect(tree.branchesOn).toEqual('enumAttr');
+        expect(tree.children.get('Y').children.get('one').branchesOn).toEqual('wordAttr');
     });
 
 });

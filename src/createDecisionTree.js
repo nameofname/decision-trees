@@ -2,6 +2,8 @@
 
 const DecisionTreeNode = require('./DecisionTreeNode');
 const logger = require('./logger');
+const difference = require('lodash.difference');
+
 
 const doBranching = node => {
     logger.trace(`RECURSION:doBranching`);
@@ -20,8 +22,11 @@ const doBranching = node => {
     return node;
 };
 
-module.exports = ({classAttribute, trainingData}) => {
-    const attributeList = Object.keys(trainingData[0]);
+module.exports = ({classAttribute, trainingData, ignoreAttributes = []}) => {
+    const attributeList = difference(
+        Object.keys(trainingData[0]),
+        ignoreAttributes
+    );
     const rootNode = new DecisionTreeNode({
         trainingData,
         classAttribute,

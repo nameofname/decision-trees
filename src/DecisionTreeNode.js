@@ -20,7 +20,7 @@ const logger = require('./logger');
  */
 class DecisionTreeNode {
 
-    constructor({ trainingData, parentCount, attributeList, classAttribute }) {
+    constructor({ trainingData, parentCount, attributeList, classAttribute, branchAttrValue }) {
 
         assert(Array.isArray(trainingData), 'DecisionTreeNode: trainingData must be an array');
         assert(Number(parentCount) === parentCount, 'DecisionTreeNode: parentCount must be a number');
@@ -31,6 +31,7 @@ class DecisionTreeNode {
         this.parentCount = parentCount; // count of training data in parent node
         this.attributeList = attributeList; // array of strings, field keys representing attributes on each TD object.
         this.classAttribute = classAttribute; // this is the attribute we create our classes based on.
+        this.branchAttrValue = branchAttrValue; // this is the value this bucket was created from
 
         // the following are calculated after calculating information gain for each attribute in the attribute list.
         this.children = null;
@@ -104,12 +105,16 @@ class DecisionTreeNode {
                     trainingData: [],
                     parentCount: trainingData.length,
                     attributeList: this.attributeList.filter(name => name !== branchAttribute),
-                    classAttribute
+                    classAttribute,
+                    branchAttrValue
                 }));
             }
 
             // push training data object to child node
             const childNode = childMap.get(branchAttrValue);
+            if (!Object.keys(trainingObj).includes(classAttribute)) {
+                throw new Error(`DecisionTreeNode: invalid classAttribute passed : ${classAttribute}`);
+            }
             childNode.trainingData.push(trainingObj);
             // increment counter for class value in child node class value counts
             const classValueCount = childNode.classValueCounts.get(classValue) || 0;
@@ -123,6 +128,7 @@ class DecisionTreeNode {
     }
 
     findIgOfChildren(proposedChildren) {
+        logger.trace(`DecisionTreeNode: findIgOfChildren - branchAttrValue = ${this.branchAttrValue}`);
         return informationGain(proposedChildren, this.trainingData.length);
     }
 
