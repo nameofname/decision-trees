@@ -27,7 +27,8 @@ logger.info(
     printTree(
         createDecisionTree({
             trainingData,
-            classAttribute: 'is_sold'
+            classAttribute: 'is_sold',
+            ignoreAttributes: ['date_sold', 'is_unpublished']
         })
     )
 );

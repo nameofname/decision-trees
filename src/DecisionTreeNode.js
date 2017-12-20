@@ -68,11 +68,6 @@ class DecisionTreeNode {
             }
         }, undefined);
 
-        if (bestFit === undefined) {
-            // in this case, there were no more attributes to branch on
-            return undefined;
-        }
-
         const { entropy, conditionalEntropy, informationGain } = bestFit.stats;
         this.entropy = entropy;
         this.conditionalEntropy = conditionalEntropy;
@@ -82,6 +77,10 @@ class DecisionTreeNode {
         this.branchesOn = bestFit.attribute;
         const logInfo = { informationGain, branchesOn: this.branchesOn };
         logger.trace(`DecisionTreeNode: branch - found ${JSON.stringify(logInfo)}`);
+
+        if (informationGain === 0) {
+            this.children = []; // don't branch if there is no info to be gained
+        }
         return this.children;
     }
 
