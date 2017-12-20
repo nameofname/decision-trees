@@ -97,21 +97,15 @@ const getRanges = (Type, low, high, segmentNum = 3) => {
         segments.push([lowerBound, upperBound]);
     }
 
-    // if (Type === Date) {
-    //     segments = segments.map(([lower, upper]) => {
-    //         return [
-    //             formatDate(Math.floor(lower)),
-    //             formatDate(Math.ceil(upper))
-    //         ];
-    //     });
-    // }
-
     logger.trace(`discovered range ${JSON.stringify(segments)}`);
     return segments;
 };
 
 const getRageFromValue = (ranges, value) => {
     logger.trace(`Searching ranges ${JSON.stringify(ranges)} for ${value}`);
+    if (isNull(value)) {
+        return [null];
+    }
     const range = ranges.reduce((prev, range) => {
         const [lower, upper] = range;
         if (prev === undefined) {
@@ -258,13 +252,18 @@ module.exports = json => {
 
                 if (!uselessStrings.get(fieldName)) { // don't use it
                     if (ranges && Type === Date) {
-                        value = Date.parse(value);
-                        const currRange = getRageFromValue(ranges, value);
-                        return Object.assign(prev, {
-                            [fieldName]: [
-                                formatDate(Math.floor(currRange[0])),
-                                formatDate(Math.ceil(currRange[1]))
+                        let curr;
+                        if (isNull(value)) {
+                            curr = null;
+                        } else {
+                            curr = getRageFromValue(ranges, Date.parse(value));
+                            curr = [
+                                formatDate(Math.floor(curr[0])),
+                                formatDate(Math.ceil(curr[1]))
                             ].join('-')
+                        }
+                        return Object.assign(prev, {
+                            [fieldName]: curr
                         })
                     } else if (ranges) {
                         const currRange = getRageFromValue(ranges, value);

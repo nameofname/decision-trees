@@ -64,7 +64,7 @@ class DecisionTreeNode {
                 return { stats, children, attribute };
             } else {
                 const prevIg = prev.stats.informationGain;
-                return stats.informationGain > prevIg ? { stats, children } : prev;
+                return stats.informationGain > prevIg ? { stats, children, attribute } : prev;
             }
         }, undefined);
 
@@ -80,6 +80,7 @@ class DecisionTreeNode {
 
         this.children = bestFit.children;
         this.branchesOn = bestFit.attribute;
+        logger.trace(`DecisionTreeNode: branch - found ${JSON.stringify({ informationGain, branchesOn: this.branchesOn })}`);
         return this.children;
     }
 
@@ -91,7 +92,6 @@ class DecisionTreeNode {
      */
     createChildrenFromAttribute(branchAttribute) {
         const { trainingData, classAttribute } = this;
-        logger.trace(`DecisionTreeNode: createChildrenFromAttribute ${branchAttribute}`);
 
         const children = trainingData.reduce((childMap, trainingObj) => {
 
@@ -128,7 +128,6 @@ class DecisionTreeNode {
     }
 
     findIgOfChildren(proposedChildren) {
-        logger.trace(`DecisionTreeNode: findIgOfChildren - branchAttrValue = ${this.branchAttrValue}`);
         return informationGain(proposedChildren, this.trainingData.length);
     }
 

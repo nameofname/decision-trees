@@ -12,13 +12,13 @@ const printTree = (node, currLevel = 0) => {
     let line;
 
     if (!branchesOn) {
-        classResults = node.trainingData.reduce((p, o) => {
+        classResults = node.trainingData.reduce((prev, o) => {
             const val = o[classAttribute].toString();
-            if (!p[val]) {
-                p[val] = 0;
+            if (!prev[val]) {
+                prev[val] = 0;
             }
-            ++p[val];
-            return p;
+            ++prev[val];
+            return prev;
         }, {});
         line = `${indent}├── Leaf Node : BranchValue (${branchAttrValue}) Count (${node.count()}) Results (${JSON.stringify(classResults)})`;
 
