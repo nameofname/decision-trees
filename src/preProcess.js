@@ -92,21 +92,75 @@ const getTrueType = typeHistory => {
 const getRanges = (Type, low, high, segmentNum = 3) => {
     const difference = high - low;
     const segmentLength = difference / segmentNum;
-    const segments = [];
+    let segments = [];
 
     for (let i = 1; i <= segmentNum; i++) {
         let lowerBound = i === 1 ? low : segments[segments.length - 1][1];
         let upperBound = lowerBound + segmentLength;
-
-        if (Type === Date) {
-            lowerBound = formatDate(lowerBound);
-            upperBound = formatDate(upperBound);
-        }
-
         segments.push([lowerBound, upperBound]);
     }
 
+    if (Type === Date) {
+        segments = segments.map(([lower, upper]) => {
+            return [
+                formatDate(Math.floor(lower)),
+                formatDate(Math.ceil(upper))
+            ];
+        });
+    }
+
+    logger.trace(`discovered range ${JSON.stringify(segments)}`);
     return segments;
+};
+
+const newDefinition = (fieldDescriptions, fieldName) => {
+    logger.trace(`newDefinition for ${fieldName}`);
+    fieldDescriptions.set(fieldName, new Map());
+    const map = fieldDescriptions.get(fieldName);
+    map.set('fieldName', fieldName);
+    map.set('allValues', new Map());
+    map.set('valueRanges', new Map());
+    map.set('typeHistory', []);
+};
+
+const addValue = (fieldDescriptions, fieldName, value, type) => {
+    logger.trace(`addValue for ${fieldName} - ${value}`);
+    const map = fieldDescriptions.get(fieldName);
+
+    if (map) {
+        map.get('allValues').set(value, true);
+        if (!map.get('typeHistory').includes(type)) {
+            map.get('typeHistory').push(type);
+        }
+
+        // format ranges into a min and max :
+        if (type === Date || type === Number || type === Boolean) {
+            const suffix = type === Date ? 'Date' : 'Number';
+            const lowestKey = `lowest${suffix}`;
+            const highestKey = `highest${suffix}`;
+            let lowest = map.get(lowestKey);
+            let highest = map.get(highestKey);
+
+            if (type === Date) {
+                value = Date.parse(value);
+            } else {
+                value = Number(value);
+            }
+
+            if (lowest === undefined || value < lowest) {
+                lowest = (type === Date) ? Date.parse(lowest) : lowest;
+                map.set(lowestKey, value);
+            }
+            if (highest=== undefined || value > highest) {
+                highest = (type === Date) ? Date.parse(highest) : highest;
+                map.set(highestKey, value);
+            }
+        }
+
+        return map;
+    }
+
+    logger.error(`could not find description for ${fieldName} - ${value}`)
 };
 
 /**
@@ -117,65 +171,15 @@ module.exports = json => {
 
     const fieldDescriptions = new Map();
 
-    const newDefinition = (fieldName) => {
-        logger.trace(`newDefinition for ${fieldName}`);
-        fieldDescriptions.set(fieldName, new Map());
-        const map = fieldDescriptions.get(fieldName);
-        map.set('fieldName', fieldName);
-        map.set('allValues', new Map());
-        map.set('valueRanges', new Map());
-        map.set('typeHistory', []);
-    };
-
-    const addValue = (fieldName, value, type) => {
-        logger.trace(`addValue for ${fieldName} - ${value}`);
-        const map = fieldDescriptions.get(fieldName);
-
-        if (map) {
-            map.get('allValues').set(value, true);
-            if (!map.get('typeHistory').includes(type)) {
-                map.get('typeHistory').push(type);
-            }
-
-            // format ranges into a min and max :
-            if (type === Date || type === Number || type === Boolean) {
-                const suffix = type === Date ? 'Date' : 'Number';
-                const lowestKey = `lowest${suffix}`;
-                const highestKey = `highest${suffix}`;
-                let lowest = map.get(lowestKey);
-                let highest = map.get(highestKey);
-
-                if (type === Date) {
-                    value = Date.parse(value);
-                } else {
-                    value = Number(value);
-                }
-
-                if (lowest === undefined || value < lowest) {
-                    lowest = (type === Date) ? Date.parse(lowest) : lowest;
-                    map.set(lowestKey, value);
-                }
-                if (highest=== undefined || value > highest) {
-                    highest = (type === Date) ? Date.parse(highest) : highest;
-                    map.set(highestKey, value);
-                }
-            }
-
-            return map;
-        }
-
-        logger.error(`could not find description for ${fieldName} - ${value}`)
-    };
-
     json.forEach((obj, idx) => {
         Object.keys(obj).forEach(key => {
             if (idx === 0) {
-                newDefinition(key)
+                newDefinition(fieldDescriptions, key)
             }
 
             const val = obj[key];
             const type = getType(val);
-            addValue(key, val, type);
+            addValue(fieldDescriptions, key, val, type);
         });
     });
 
@@ -198,9 +202,10 @@ module.exports = json => {
             const lowest = val.get(lowestKey);
             const highest = val.get(highestKey);
             const ranges = getRanges(trueType, lowest, highest);
-            console.log('--------------------------------------------')
-            console.log(highestKey, lowest, highest, ranges)
+
+            // console.log(ranges)
             // TODO ! assign ranges to values.
+
         } else if (trueType === String) {
             // TODO ! check the number of different strings! if it's relatively few, then proceed, otherwise, ignore.
         }
