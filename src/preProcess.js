@@ -97,21 +97,30 @@ const getRanges = (Type, low, high, segmentNum = 3) => {
         segments.push([lowerBound, upperBound]);
     }
 
-    if (Type === Date) {
-        segments = segments.map(([lower, upper]) => {
-            return [
-                formatDate(Math.floor(lower)),
-                formatDate(Math.ceil(upper))
-            ];
-        });
-    }
+    // if (Type === Date) {
+    //     segments = segments.map(([lower, upper]) => {
+    //         return [
+    //             formatDate(Math.floor(lower)),
+    //             formatDate(Math.ceil(upper))
+    //         ];
+    //     });
+    // }
 
     logger.trace(`discovered range ${JSON.stringify(segments)}`);
     return segments;
 };
 
-const getRageFromValue = (range, value) => {
-    return [1, 2]; // TODO
+const getRageFromValue = (ranges, value) => {
+    logger.trace(`Searching ranges ${JSON.stringify(ranges)} for ${value}`);
+    const range = ranges.reduce((prev, range) => {
+        const [lower, upper] = range;
+        if (prev === undefined) {
+            const test = (lower <= value && value <= upper);
+            return test ? range : prev;
+        }
+        return prev;
+    }, undefined);
+    return range || ['A', "Bullshit"];
 };
 
 const determineStringIsUseless = (fieldDescription, valueLimit = 10) => {
@@ -135,7 +144,7 @@ const newDefinition = (fieldDescriptions, fieldName) => {
 };
 
 const addValue = (fieldDescriptions, fieldName, value, type) => {
-    // logger.trace(`addValue for ${fieldName} - ${value}`);
+    logger.trace(`addValue for ${fieldName} - ${value}`);
     const fieldDescription = fieldDescriptions.get(fieldName);
 
     if (fieldDescription) {
@@ -243,16 +252,27 @@ module.exports = json => {
         return Object
             .keys(row)
             .reduce((prev, fieldName) => {
-                const value = row[fieldName];
-                const range = rangeMap.get(fieldName);
+                let value = row[fieldName];
+                const ranges = rangeMap.get(fieldName);
+                const Type = fieldDescriptions.get(fieldName).get('trueType');
 
                 if (!uselessStrings.get(fieldName)) { // don't use it
-                    if (range) {
-                        const currRange = getRageFromValue(range, value);
+                    if (ranges && Type === Date) {
+                        value = Date.parse(value);
+                        const currRange = getRageFromValue(ranges, value);
+                        return Object.assign(prev, {
+                            [fieldName]: [
+                                formatDate(currRange[0]),
+                                formatDate(currRange[1])
+                            ].join('-')
+                        })
+                    } else if (ranges) {
+                        const currRange = getRageFromValue(ranges, value);
                         return Object.assign(prev, {
                             [fieldName]: currRange.join('-')
                         })
                     }
+
                     return Object.assign(prev, {
                         [fieldName]: value
                     })
