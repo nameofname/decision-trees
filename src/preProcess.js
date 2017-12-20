@@ -110,22 +110,41 @@ const getRanges = (Type, low, high, segmentNum = 3) => {
     return segments;
 };
 
+const getRageFromValue = (range, value) => {
+    return [1, 2]; // TODO
+};
+
+const determineStringIsUseless = (fieldDescription, valueLimit = 10) => {
+    if (fieldDescription.trueType === String) {
+        if (fieldDescription.get('valueCount') > valueLimit) {
+            return false;
+        }
+    }
+    return false;
+};
+
 const newDefinition = (fieldDescriptions, fieldName) => {
     logger.trace(`newDefinition for ${fieldName}`);
     fieldDescriptions.set(fieldName, new Map());
     const map = fieldDescriptions.get(fieldName);
     map.set('fieldName', fieldName);
     map.set('allValues', new Map());
+    map.set('valueCount', 0);
     map.set('valueRanges', new Map());
     map.set('typeHistory', []);
 };
 
 const addValue = (fieldDescriptions, fieldName, value, type) => {
-    logger.trace(`addValue for ${fieldName} - ${value}`);
+    // logger.trace(`addValue for ${fieldName} - ${value}`);
     const fieldDescription = fieldDescriptions.get(fieldName);
 
     if (fieldDescription) {
-        fieldDescription.get('allValues').set(value, true);
+
+        if (!fieldDescription.get('allValues')) {
+            fieldDescription.get('allValues').set(value, true);
+            fieldDescription.set('valueCount', fieldDescription.get('valueCount') + 1);
+        }
+
         if (!fieldDescription.get('typeHistory').includes(type)) {
             fieldDescription.get('typeHistory').push(type);
         }
@@ -166,23 +185,31 @@ const addValue = (fieldDescriptions, fieldName, value, type) => {
 module.exports = json => {
 
     const fieldDescriptions = new Map();
+    const uselessStrings = new Map();
+    const rangeMap = new Map();
 
-    json.forEach((obj, idx) => {
-        Object.keys(obj).forEach(key => {
+    // first add all the definitions to the descriptions map we will need.
+    // loops over each field.
+    json.forEach((row, idx) => {
+        Object.keys(row).forEach(key => {
             if (idx === 0) {
                 newDefinition(fieldDescriptions, key)
             }
 
-            const val = obj[key];
+            const val = row[key];
             const type = getType(val);
             addValue(fieldDescriptions, key, val, type);
         });
     });
 
+    // next using that description map, we parse out ranges and strings which are useless.
     for (let entry of fieldDescriptions.entries()) {
 
         const [fieldName, fieldDescription] = entry;
         const typeHistory = fieldDescription.get('typeHistory');
+        logger.trace(`Processing field ${fieldName}
+        with valueCount ${fieldDescription.get('valueCount')}
+        and typeHistory ${fieldDescription.get('typeHistory')}`);
 
         let trueType = typeHistory[0];
         if (typeHistory.length > 1) {
@@ -190,6 +217,8 @@ module.exports = json => {
         }
 
         fieldDescription.set('trueType', trueType);
+
+        let isUselessString = false;
 
         if (trueType === Number || trueType === Date) {
             const suffix = trueType === Date ? 'Date' : 'Number';
@@ -199,14 +228,40 @@ module.exports = json => {
             const highest = fieldDescription.get(highestKey);
             const ranges = getRanges(trueType, lowest, highest);
             fieldDescription.set('ranges', ranges);
-
-            // console.log(ranges)
-            // TODO ! assign ranges to values.
+            rangeMap.set(fieldName, ranges);
 
         } else if (trueType === String) {
-            // TODO ! check the number of different strings! if it's relatively few, then proceed, otherwise, ignore.
+            isUselessString = determineStringIsUseless(fieldDescription)
+            uselessStrings.set(fieldName, true);
         }
+
+        fieldDescription.set('isUselessString', isUselessString);
     }
 
-    return fieldDescriptions;
+    // finally assign ranges to values, and throw out useless strings
+    json = json.map((row) => {
+        return Object
+            .keys(row)
+            .reduce((prev, fieldName) => {
+                const value = row[fieldName];
+                const range = rangeMap.get(fieldName);
+
+                if (!uselessStrings.get(fieldName)) { // don't use it
+                    if (range) {
+                        const currRange = getRageFromValue(range, value);
+                        return Object.assign(prev, {
+                            [fieldName]: currRange.join('-')
+                        })
+                    }
+                    return Object.assign(prev, {
+                        [fieldName]: value
+                    })
+                }
+
+                return prev;
+
+            }, {});
+    });
+
+    return json;
 };
