@@ -1,5 +1,4 @@
 "use strict";
-let i = 0
 
 const moment = require('moment');
 const logger = require('./logger');
@@ -141,7 +140,7 @@ const newDefinition = (fieldDescriptions, fieldName) => {
 };
 
 const addValue = (fieldDescriptions, fieldName, value, type) => {
-    logger.trace(`addValue for ${fieldName} - ${value}`);
+    // logger.trace(`addValue for ${fieldName} - ${value}`);
     const fieldDescription = fieldDescriptions.get(fieldName);
 
     if (fieldDescription) {
@@ -260,7 +259,6 @@ module.exports = json => {
                             curr = null;
                         } else {
                             curr = getRageFromValue(ranges, Date.parse(value));
-                            logger.info('i', ++i)
                             curr = [
                                 formatDate(Math.floor(curr[0])),
                                 formatDate(Math.ceil(curr[1]))

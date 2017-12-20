@@ -21,7 +21,7 @@ const makeTree = () => {
 
 
 const trainingData = preProcess(json);
-logger.info(trainingData);
+// logger.info(trainingData);
 
 logger.info(
     printTree(

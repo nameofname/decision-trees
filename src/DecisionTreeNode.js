@@ -51,7 +51,6 @@ class DecisionTreeNode {
      *      - repeat until done: the resulting children become our new children
      */
     branch() {
-        logger.trace(`DecisionTreeNode: branch`);
         const { classAttribute } = this;
 
         const bestFit = this.attributeList.reduce((prev, attribute) => {
@@ -60,6 +59,7 @@ class DecisionTreeNode {
             }
             const children = this.createChildrenFromAttribute(attribute);
             const stats = this.findIgOfChildren(children);
+            // logger.trace(`found Information Gain of ${stats.informationGain} for ${attribute}`)
             if (prev === undefined) {
                 return { stats, children, attribute };
             } else {
@@ -80,7 +80,8 @@ class DecisionTreeNode {
 
         this.children = bestFit.children;
         this.branchesOn = bestFit.attribute;
-        logger.trace(`DecisionTreeNode: branch - found ${JSON.stringify({ informationGain, branchesOn: this.branchesOn })}`);
+        const logInfo = { informationGain, branchesOn: this.branchesOn };
+        logger.trace(`DecisionTreeNode: branch - found ${JSON.stringify(logInfo)}`);
         return this.children;
     }
 
