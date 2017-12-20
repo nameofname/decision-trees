@@ -9,18 +9,8 @@ const preProcess = require('../src/preProcess');
 const json = require('../data/rptRonHackathon-100.json').result;
 const json1000 = require('../data/rptRonHackathon-1000.json').result;
 
-const makeTree = () => {
-    logger.info(printTree(
-        createDecisionTree({
-            trainingData: json,
-            classAttribute: 'is_sold',
-            // ignoreAttributes: ['id', 'name']
-        })
-    ));
-};
 
-
-const trainingData = preProcess(json);
+const trainingData = preProcess(json1000);
 // logger.info(trainingData);
 
 logger.info(

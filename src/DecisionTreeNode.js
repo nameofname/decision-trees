@@ -69,18 +69,19 @@ class DecisionTreeNode {
         }, undefined);
 
         const { entropy, conditionalEntropy, informationGain } = bestFit.stats;
-        this.entropy = entropy;
-        this.conditionalEntropy = conditionalEntropy;
-        this.informationGain = informationGain;
 
-        this.children = bestFit.children;
-        this.branchesOn = bestFit.attribute;
-        const logInfo = { informationGain, branchesOn: this.branchesOn };
-        logger.trace(`DecisionTreeNode: branch - found ${JSON.stringify(logInfo)}`);
-
-        if (informationGain === 0) {
+        if (informationGain === 0 || informationGain === null) {
             this.children = []; // don't branch if there is no info to be gained
+        } else {
+            this.entropy = entropy;
+            this.conditionalEntropy = conditionalEntropy;
+            this.informationGain = informationGain;
+            this.children = bestFit.children;
+            this.branchesOn = bestFit.attribute;
+            const logInfo = { informationGain, branchesOn: this.branchesOn };
+            logger.trace(`DecisionTreeNode: branch - found ${JSON.stringify(logInfo)}`);
         }
+
         return this.children;
     }
 
