@@ -10,7 +10,7 @@ const json = require('../data/rptRonHackathon-100.json').result;
 const json1000 = require('../data/rptRonHackathon-1000.json').result;
 
 
-const trainingData = preProcess(json1000);
+const trainingData = preProcess(json);
 // logger.info(trainingData);
 
 logger.info(

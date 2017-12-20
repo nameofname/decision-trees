@@ -135,6 +135,14 @@ class DecisionTreeNode {
     count() {
         return this.trainingData.length;
     }
+
+    getClassStats() {
+        const ret = {};
+        for (let [key, value] of this.classValueCounts.entries()) {
+            Object.assign(ret, { [key]: value });
+        }
+        return ret;
+    }
 }
 
 module.exports = DecisionTreeNode;

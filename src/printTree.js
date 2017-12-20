@@ -7,25 +7,14 @@ const colors = require('colors');
 const printTree = (node, currLevel = 0) => {
 
     const indent = new Array(currLevel).fill('|  ').join('');
-    const { branchesOn, classAttribute, branchAttrValue, informationGain } = node;
-    let classResults;
+    const { branchesOn, branchAttrValue, informationGain } = node;
+
     let line;
-
     if (!branchesOn) {
-        classResults = node.trainingData.reduce((prev, o) => {
-            const val = o[classAttribute].toString();
-            if (!prev[val]) {
-                prev[val] = 0;
-            }
-            ++prev[val];
-            return prev;
-        }, {});
-        line = `${indent}├── Leaf Node : BranchValue (${branchAttrValue}) Count (${node.count()}) Results (${JSON.stringify(classResults)})`;
-
+        line = `${indent}├── Leaf Node : BranchValue (${branchAttrValue}) Count (${node.count()}) Results (${JSON.stringify(node.getClassStats())}})`;
     } else {
         line = `${indent}├── Branched On : ${branchesOn} IG (${colors.yellow(informationGain)}) BranchValue (${branchAttrValue}) Count (${node.count()})`;
     }
-
 
     console.log(colors.green(line));
 
