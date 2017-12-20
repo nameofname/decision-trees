@@ -262,8 +262,8 @@ module.exports = json => {
                         const currRange = getRageFromValue(ranges, value);
                         return Object.assign(prev, {
                             [fieldName]: [
-                                formatDate(currRange[0]),
-                                formatDate(currRange[1])
+                                formatDate(Math.floor(currRange[0])),
+                                formatDate(Math.ceil(currRange[1]))
                             ].join('-')
                         })
                     } else if (ranges) {

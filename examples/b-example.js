@@ -7,6 +7,7 @@ const printTree = require('../src/printTree');
 const logger = require('../src/logger');
 const preProcess = require('../src/preProcess');
 const json = require('../data/rptRonHackathon-100.json').result;
+const json1000 = require('../data/rptRonHackathon-1000.json').result;
 
 const makeTree = () => {
     logger.info(printTree(
@@ -20,6 +21,8 @@ const makeTree = () => {
 
 
 const trainingData = preProcess(json);
+// logger.info(trainingData);
+// process.exit();
 logger.info(
     printTree(
         createDecisionTree({

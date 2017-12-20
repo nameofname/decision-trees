@@ -6,7 +6,7 @@ const colors = require('colors');
 
 const printTree = (node, currLevel = 0) => {
 
-    const indent = new Array(currLevel).fill('|      ').join('');
+    const indent = new Array(currLevel).fill('|  ').join('');
     const { branchesOn, classAttribute, branchAttrValue, informationGain } = node;
     let classResults;
     let line;
