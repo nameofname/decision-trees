@@ -18,7 +18,19 @@ logger.info(
         createDecisionTree({
             trainingData,
             classAttribute: 'is_sold',
-            ignoreAttributes: ['date_sold', 'is_unpublished', 'item_return_policy_id']
+            ignoreAttributes: [
+                'date_sold',
+                'is_unpublished',
+                'item_return_policy_id',
+                'is_deleted',
+                'is_available',
+                'date_modified',
+                'date_deleted',
+                'item_NYDC',
+                'storefront_search',
+                'on_site',
+                'seo_flag',
+            ]
         }),
         ({ count, classStats}) => {
             const num = classStats && classStats['1'] || 0;
