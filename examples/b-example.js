@@ -19,12 +19,12 @@ const makeTree = () => {
 };
 
 
-// let n = 0;
-// setInterval(() => {
-//     console.log(json[n]);
-//     ++n;
-// }, 2000)
-
-
-// preProcess(json);
-logger.info(preProcess(json));
+const trainingData = preProcess(json);
+logger.info(
+    printTree(
+        createDecisionTree({
+            trainingData,
+            classAttribute: 'is_sold'
+        })
+    )
+);
