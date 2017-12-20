@@ -4,15 +4,6 @@
 const moment = require('moment');
 const logger = require('./logger');
 
-const isDate = date => {
-    let isDate = false;
-    try {
-        isDate = moment(date).isValid()
-    } catch (e) {
-        isDate = false
-    }
-    return isDate;
-};
 const isMysqlDate = date => {
     return moment(date, "YYYY-MM-DD HH:mm:ss", true).isValid(); // string parsing.
 };
@@ -23,6 +14,8 @@ const isUndefined = n => n === undefined;
 const isBool = bool => {
     return [0, 1, true, false].includes(bool);
 };
+
+const formatDate = int => moment(int).format("YYYY-MM-DD HH:mm:ss");
 
 // if something is a date every time, it's a date
 // if something is a number every time, it's a number
@@ -97,17 +90,20 @@ const getTrueType = typeHistory => {
  * @param segments
  */
 const getRanges = (Type, low, high, segmentNum = 3) => {
-    // if (Type === Date) {
-    //     low = Date.parse(low);
-    //     high = Date.parse(high);
-    // }
-
     const difference = high - low;
     const segmentLength = difference / segmentNum;
     const segments = [];
 
-    for (let i = 1; i <= segments; i++) {
-        segments.push(low + (segmentLength * i))
+    for (let i = 1; i <= segmentNum; i++) {
+        let lowerBound = i === 1 ? low : segments[segments.length - 1][1];
+        let upperBound = lowerBound + segmentLength;
+
+        if (Type === Date) {
+            lowerBound = formatDate(lowerBound);
+            upperBound = formatDate(upperBound);
+        }
+
+        segments.push([lowerBound, upperBound]);
     }
 
     return segments;
@@ -150,20 +146,17 @@ module.exports = json => {
                 let highest = map.get(highestKey);
 
                 if (type === Date) {
-                    lowest = Date.parse(lowest);
-                    highest = Date.parse(highest);
                     value = Date.parse(value);
                 } else {
                     value = Number(value);
                 }
 
-                if (type === Number && value !== 0) {
-                    console.log('wtf');
-                }
                 if (lowest === undefined || value < lowest) {
+                    lowest = (type === Date) ? Date.parse(lowest) : lowest;
                     map.set(lowestKey, value);
                 }
                 if (highest=== undefined || value > highest) {
+                    highest = (type === Date) ? Date.parse(highest) : highest;
                     map.set(highestKey, value);
                 }
             }
