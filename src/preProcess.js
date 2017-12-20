@@ -17,11 +17,13 @@ const isBool = bool => {
 
 const formatDate = int => moment(int).format("YYYY-MM-DD HH:mm:ss");
 
-// if something is a date every time, it's a date
-// if something is a number every time, it's a number
-// if it misses being a date or number one or more times, it's a string
-// if it's true, false, 0, or 1 - every time, it's boolean
-// but if it misses being boolean and it's a number, then it may be a number if we previously had only 0 and 1
+/**
+ * if something is a date every time, it's a date
+ * if something is a number every time, it's a number
+ * if it misses being a date or number one or more times, it's a string
+ * if it's true, false, 0, or 1 - every time, it's boolean
+ * but if it misses being boolean and it's a number, then it may be a number if we previously had only 0 and 1
+ */
 const getType = value => {
     switch (true) {
         case isNull(value) :
@@ -50,8 +52,6 @@ const getType = value => {
  *      ['2016-05-09 11:00:00', 'popsicles', '2016-05-10 12:00:00', 'animal bones']
  *      ['2016-05-09 11:00:00', NULL, NULL, '2016-05-10 12:00:00']
  * In this case the first is not a date, it's a string, but the second is a date
- * @param typeHistory
- * @returns {*}
  */
 const getTrueType = typeHistory => {
     if (typeHistory.includes(Date)) {
@@ -85,9 +85,6 @@ const getTrueType = typeHistory => {
 
 /**
  * Break a low and high number (or date) into ranges.
- * @param low
- * @param high
- * @param segments
  */
 const getRanges = (Type, low, high, segmentNum = 3) => {
     const difference = high - low;
@@ -125,12 +122,12 @@ const newDefinition = (fieldDescriptions, fieldName) => {
 
 const addValue = (fieldDescriptions, fieldName, value, type) => {
     logger.trace(`addValue for ${fieldName} - ${value}`);
-    const map = fieldDescriptions.get(fieldName);
+    const fieldDescription = fieldDescriptions.get(fieldName);
 
-    if (map) {
-        map.get('allValues').set(value, true);
-        if (!map.get('typeHistory').includes(type)) {
-            map.get('typeHistory').push(type);
+    if (fieldDescription) {
+        fieldDescription.get('allValues').set(value, true);
+        if (!fieldDescription.get('typeHistory').includes(type)) {
+            fieldDescription.get('typeHistory').push(type);
         }
 
         // format ranges into a min and max :
@@ -138,8 +135,8 @@ const addValue = (fieldDescriptions, fieldName, value, type) => {
             const suffix = type === Date ? 'Date' : 'Number';
             const lowestKey = `lowest${suffix}`;
             const highestKey = `highest${suffix}`;
-            let lowest = map.get(lowestKey);
-            let highest = map.get(highestKey);
+            let lowest = fieldDescription.get(lowestKey);
+            let highest = fieldDescription.get(highestKey);
 
             if (type === Date) {
                 value = Date.parse(value);
@@ -149,15 +146,15 @@ const addValue = (fieldDescriptions, fieldName, value, type) => {
 
             if (lowest === undefined || value < lowest) {
                 lowest = (type === Date) ? Date.parse(lowest) : lowest;
-                map.set(lowestKey, value);
+                fieldDescription.set(lowestKey, value);
             }
             if (highest=== undefined || value > highest) {
                 highest = (type === Date) ? Date.parse(highest) : highest;
-                map.set(highestKey, value);
+                fieldDescription.set(highestKey, value);
             }
         }
 
-        return map;
+        return fieldDescription;
     }
 
     logger.error(`could not find description for ${fieldName} - ${value}`)
@@ -165,7 +162,6 @@ const addValue = (fieldDescriptions, fieldName, value, type) => {
 
 /**
  * Expects JSON converted from CSV file
- * @param json
  */
 module.exports = json => {
 
@@ -185,23 +181,24 @@ module.exports = json => {
 
     for (let entry of fieldDescriptions.entries()) {
 
-        const [fieldName, val] = entry;
-        const typeHistory = val.get('typeHistory');
+        const [fieldName, fieldDescription] = entry;
+        const typeHistory = fieldDescription.get('typeHistory');
 
         let trueType = typeHistory[0];
         if (typeHistory.length > 1) {
             trueType = getTrueType(typeHistory);
         }
 
-        val.set('trueType', trueType);
+        fieldDescription.set('trueType', trueType);
 
         if (trueType === Number || trueType === Date) {
             const suffix = trueType === Date ? 'Date' : 'Number';
             const lowestKey = `lowest${suffix}`;
             const highestKey = `highest${suffix}`;
-            const lowest = val.get(lowestKey);
-            const highest = val.get(highestKey);
+            const lowest = fieldDescription.get(lowestKey);
+            const highest = fieldDescription.get(highestKey);
             const ranges = getRanges(trueType, lowest, highest);
+            fieldDescription.set('ranges', ranges);
 
             // console.log(ranges)
             // TODO ! assign ranges to values.
