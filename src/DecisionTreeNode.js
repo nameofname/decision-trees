@@ -59,7 +59,6 @@ class DecisionTreeNode {
             }
             const children = this.createChildrenFromAttribute(attribute);
             const stats = this.findIgOfChildren(children);
-            // logger.trace(`found Information Gain of ${stats.informationGain} for ${attribute}`)
             if (prev === undefined) {
                 return { stats, children, attribute };
             } else {
@@ -137,10 +136,22 @@ class DecisionTreeNode {
     }
 
     getClassStats() {
-        const ret = {};
+        let ret = {};
+
+        if (this.branchAttrValue === undefined) {
+
+            const classAttribute = this.classAttribute;
+            this.trainingData.forEach(data => {
+                const classValue = data[classAttribute];
+                const classValueCount = this.classValueCounts.get(classValue) || 0;
+                this.classValueCounts.set(classValue, classValueCount + 1);
+            }, {});
+        }
+
         for (let [key, value] of this.classValueCounts.entries()) {
             Object.assign(ret, { [key]: value });
         }
+
         return ret;
     }
 }
