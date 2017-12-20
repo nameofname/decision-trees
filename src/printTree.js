@@ -8,12 +8,13 @@ const printTree = (node, currLevel = 0) => {
 
     const indent = new Array(currLevel).fill('|  ').join('');
     const { branchesOn, branchAttrValue, informationGain } = node;
-
+    const classStats = JSON.stringify(node.getClassStats());
     let line;
+
     if (!branchesOn) {
-        line = `${indent}├── Leaf Node : BranchValue (${branchAttrValue}) Count (${node.count()}) Results (${JSON.stringify(node.getClassStats())}})`;
+        line = `${indent}├── Leaf Node : BranchValue (${branchAttrValue}) Count (${node.count()}) Results (${classStats}})`;
     } else {
-        line = `${indent}├── Branched On : ${branchesOn} IG (${colors.yellow(informationGain)}) BranchValue (${branchAttrValue}) Count (${node.count()})`;
+        line = `${indent}├── BranchValue (${branchAttrValue}) Branch On : ${branchesOn} IG (${colors.yellow(informationGain)}) Count (${node.count()}) Results (${classStats})`;
     }
 
     console.log(colors.green(line));
