@@ -4,23 +4,26 @@
 const colors = require('colors');
 
 
-const printTree = (node, currLevel = 0) => {
+const printTree = (node, processFunc = () => {}, currLevel = 0) => {
 
     const indent = new Array(currLevel).fill('|  ').join('');
     const { branchesOn, branchAttrValue, informationGain } = node;
-    const classStats = JSON.stringify(node.getClassStats());
+    const classStats = node.getClassStats();
+    const classStatsString = JSON.stringify(classStats);
+    const count = node.count();
+    const customOutput = processFunc({ count, classStats});
     let line;
 
     if (!branchesOn) {
-        line = `${indent}├── Leaf Node : BranchValue (${branchAttrValue}) Count (${node.count()}) Results (${classStats}})`;
+        line = `${indent}├── Leaf Node : BranchValue (${branchAttrValue}) Count (${count}) Results (${classStatsString}}) (${customOutput})`;
     } else {
-        line = `${indent}├── BranchValue (${branchAttrValue}) Branch On : ${branchesOn} IG (${colors.yellow(informationGain)}) Count (${node.count()}) Results (${classStats})`;
+        line = `${indent}├── BranchValue (${branchAttrValue}) Branch On : ${branchesOn} IG (${colors.yellow(informationGain)}) Count (${count}) Results (${classStatsString}) (${customOutput})`;
     }
 
     console.log(colors.green(line));
 
     node.children && node.children.forEach(child => {
-        printTree(child, (currLevel + 1));
+        printTree(child, processFunc, (currLevel + 1));
     });
 
 };

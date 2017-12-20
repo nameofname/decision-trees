@@ -18,7 +18,12 @@ logger.info(
         createDecisionTree({
             trainingData,
             classAttribute: 'is_sold',
-            ignoreAttributes: ['date_sold', 'is_unpublished']
-        })
+            ignoreAttributes: ['date_sold', 'is_unpublished', 'item_return_policy_id']
+        }),
+        ({ count, classStats}) => {
+            const num = classStats && classStats['1'] || 0;
+            const percent = Math.round((Number(num) / count) * 100);
+            return `${percent}% sold`
+        }
     )
 );
