@@ -1,5 +1,5 @@
 "use strict";
-
+let i = 0
 
 const moment = require('moment');
 const logger = require('./logger');
@@ -93,7 +93,7 @@ const getRanges = (Type, low, high, segmentNum = 3) => {
 
     for (let i = 1; i <= segmentNum; i++) {
         let lowerBound = i === 1 ? low : segments[segments.length - 1][1];
-        let upperBound = lowerBound + segmentLength;
+        let upperBound = i === segmentNum ? high : lowerBound + segmentLength;
         segments.push([lowerBound, upperBound]);
     }
 
@@ -114,7 +114,10 @@ const getRageFromValue = (ranges, value) => {
         }
         return prev;
     }, undefined);
-    return range || ['A', "Bullshit"];
+    if (!range) {
+        logger.error(`No range found for value ${value}`);
+    }
+    return range;
 };
 
 const determineStringIsUseless = (fieldDescription, valueLimit = 10) => {
@@ -257,6 +260,7 @@ module.exports = json => {
                             curr = null;
                         } else {
                             curr = getRageFromValue(ranges, Date.parse(value));
+                            logger.info('i', ++i)
                             curr = [
                                 formatDate(Math.floor(curr[0])),
                                 formatDate(Math.ceil(curr[1]))
